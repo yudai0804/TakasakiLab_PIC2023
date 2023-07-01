@@ -21,6 +21,7 @@ detect_start_bitmap = False
 for s in lines:
 	if(s.startswith('ENCODING ')):
 		s = s.replace('ENCODING ', '')
+		# 文字コードからstrに変換
 		tmp_utf8_str = chr(int(s))
 	elif('BITMAP' in s):
 		# この後ビットマップ情報が来るため変数を初期化する
