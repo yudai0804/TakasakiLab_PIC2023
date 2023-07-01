@@ -1,12 +1,6 @@
 font_path = './misaki_gothic_2nd.bdf'
-NO_DETECT = 0
-DETECT = 1
-END = 2
-
-STARTFONT = NO_DETECT
 PIXEL_SIZE = 8
 # 文字セグメント数
-CHARS = -1
 dictionary = {}
 # フォントデータを読み込み
 with open(font_path, encoding='utf-8') as f:
