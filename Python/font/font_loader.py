@@ -1,14 +1,13 @@
 
 class FontLoader:
 	def __init__(self, font_path : str) -> None:
-		self.__PixelSize = -1
 		self.__dictionary = {}
 		self.load(font_path)
 
 	def load(self, font_path : str) -> None:
 		self.__dictionary = {}
 		tmp_utf8_str = -1
-		tmp_bitmap = [0] * self.__PixelSize
+		tmp_bitmap = [0] * 8
 		tmp_bitmap_index = 0
 		detect_start_bitmap = False
 		# フォントデータをファイルから取得
@@ -34,9 +33,6 @@ class FontLoader:
 			elif(detect_start_bitmap == True):
 				tmp_bitmap[tmp_bitmap_index] = int(s, 16)
 				tmp_bitmap_index += 1
-	
-	def getPixelSize(self) -> int:
-		return self.__PixelSize
 
 	def getDictionary(self) -> dict:
 		return self.__dictionary
