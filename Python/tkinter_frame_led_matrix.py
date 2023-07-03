@@ -1,31 +1,38 @@
 import tkinter
 
-class Tkinter_Frame_LEDMatrix:
-	def __init__(self, frame : tkinter.Frame, canvas : tkinter.Canvas, num : int, circle_size = 10, circle_space = 25) -> None:
-		# 変数を初期化
-		self.__frame = frame
-		self.__canvas = canvas
-		self.__num = num
-		self.__circle_size = circle_size
-		self.__circle_space = circle_space
-		self.__matrix_click_status = [[0] * self.__num for i in range(self.__num)]
-		self.__matrix_led_status = [[0] * self.__num for i in range(self.__num)]
-		# frameにLEDを配置
-		#canvasを作成
-		self.__canvas.create_oval(10, 10, 100, 100, fill='#ff0000')
-	
+class LEDMatrix(tkinter.Canvas):
+	def __init__(self, master, canvas_width, canvas_height, radius, row, column):
+		super().__init__(master=master, width=canvas_width, height=canvas_height)
+		self.__radius = radius
+		self.__row = row
+		self.__column = column
+		self.__matrix = [[0] * column for i in range (row)]
+		# bind
+		self.bind("<Motion>", self.onMotion)
+		self.bind("<ButtonRelease-1>", self.onClick)		
+		# 円を描画
+		width_offset = canvas_width // (column + 1)
+		height_offset = canvas_height // (row + 1)
+		for i in range (row):
+			for j in range (column):
+				tag = 'led[' + str(i) + '][' + str(j) + ']'
+				x0 = width_offset*(i+1) + radius
+				y0 = height_offset*(j+1) + radius
+				x1 = width_offset*(i+1) - radius
+				y1 = height_offset*(j+1) - radius
+				self.create_oval(x0, y0, x1, y1, tags=tag)
 
-if __name__ == '__main__':
-	
+	def onMotion(self, event):
+		print('x=' + str(event.x) + 'y = ' + str(event.y))
+	def onClick(self, event):
+		print('onClick')
+		print('x=' + str(event.x) + 'y = ' + str(event.y))
+
+#ラベルの表示
+if __name__ == "__main__":
 	root = tkinter.Tk()
-	root.title('tkinterの使い方')
-	root.geometry('500x500')
-	root.resizable(False, False)
-	frame = tkinter.Frame(root, width=500, height=250, borderwidth=2, relief='solid')
-	# frame.propagate(False)
-	frame.grid(row=0, column=0)
-	canvas = tkinter.Canvas(root, background="#ffffff",width=150, height=150)
-	# canvas.pack()
-	led_matrix = Tkinter_Frame_LEDMatrix(frame, canvas, 8)
-	print("hello")
+	root.geometry('800x450')
+	mat = LEDMatrix(root, 400, 400, 20, 8, 8)
+	
+	mat.pack()
 	root.mainloop()
