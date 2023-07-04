@@ -11,24 +11,48 @@ class LEDMatrix(tkinter.Canvas):
 		self.__canvas_width = (2 * radius + space) * column + space
 		self.__canvas_height = (2 * radius + space) * row + space
 		super().__init__(master=master, width=self.__canvas_width, height=self.__canvas_height)
-		self.__matrix = [[0] * self.__column for i in range (self.__row)]
-		print(self.__matrix[0])
+		self.__matrix_output = [[0] * self.__column for i in range (self.__row)]
+		self.__matrix_x0 = [[0] * self.__column for i in range (self.__row)]
+		self.__matrix_x1 = [[0] * self.__column for i in range (self.__row)]
+		self.__matrix_y0 = [[0] * self.__column for i in range (self.__row)]
+		self.__matrix_y1 = [[0] * self.__column for i in range (self.__row)]
 		# bind
 		# self.bind("<Motion>", self.onMotion)
 		# self.bind("<ButtonRelease-1>", self.onClick)		
 		# 円を描画
 		x0 = y0 = x1 = y1 = 0
-		for i in range (self.__column):
-			y0 = y1 = 0
-			x0 = space + x1
-			x1 = x0 + 2 * radius			
-			for j in range (self.__row):
-				tag = 'led[' + str(i) + '][' + str(j) + ']'
-				y0 = space + y1
-				y1 = y0 + 2 * radius
+		for i in range (self.__row):
+			x0 = x1 = 0
+			y0 = space + y1
+			y1 = y0 + 2 * radius			
+			for j in range (self.__column):
+				x0 = space + x1
+				x1 = x0 + 2 * radius
 				# print(x0, y0, x1, y1)
-				self.create_oval(x0, y0, x1, y1, tags=tag)
-
+				# print(len(self.__matrix_x0))
+				# print(i, j)
+				self.__matrix_x0[i][j] = x0
+				self.__matrix_y0[i][j] = y0
+				self.__matrix_x1[i][j] = x1
+				self.__matrix_y1[i][j] = y1
+				self.create_oval(x0, y0, x1, y1)
+				# self.coords(tag, fill='red')
+	def output(self, output_matrix):
+		if(len(output_matrix) == self.__row and len(output_matrix[0]) == self.__column):
+			for i in range(self.__row):
+				for j in range(self.__column):
+					color = 'white'
+					# self.__matrix_output[i][j] = 0
+					self.__matrix_output[i][j] = 0
+					if(output_matrix[i][j] == 1):
+						color = 'red'
+						# self.__matrix_output[i][j] = 1
+						self.__matrix_output[i][j] = 1
+						print(color, self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j])
+					self.create_oval(self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j], fill=color)
+		else:
+			print("matrix error")
+		
 	def onMotion(self, event):
 		print('x=' + str(event.x) + 'y = ' + str(event.y))
 	def onClick(self, event):
@@ -38,9 +62,16 @@ class LEDMatrix(tkinter.Canvas):
 		return self.__canvas_width, self.__canvas_height
 #ラベルの表示
 if __name__ == "__main__":
+	from font_converter_row_direction import *
+	from font_loader import *
 	root = tkinter.Tk()
 	root.geometry('800x450')
-	mat = LEDMatrix(root, radius=16, row=10, column=8, space_ratio=0.4)
+	mat = LEDMatrix(root, radius=16, row=8, column=8, space_ratio=0.4)
+	loader = FontLoader('./misaki_gothic_2nd.bdf')
+	converter = FontConverter_RowDirection(loader.getDictionary())
+	converter.convert('WELCOME TMCIT  ')
+	viewMat8x8(converter.get8x8Matrix(0))
+	mat.output(converter.get8x8Matrix(0))
 	mat.pack()
 	print(mat.getCanvasSize())
 	root.mainloop()
