@@ -7,6 +7,9 @@ class FontConverter_RowDirection:
     self.__matrix = []
 
   def convert(self, s : str):
+    """
+    1次元の配列に変換結果を格納する
+    """
     self.__s = s
     # 8行 len(self.__s)列の配列
     self.__matrix = [[0] * len(self.__s) for i in range (8)]
@@ -43,9 +46,12 @@ class FontConverter_RowDirection:
           del self.__matrix[j][index+1:]
         else:
           del self.__matrix[j][index:]
-    return self.__matrix
+    return self.__matrix     
   
-  def get8x8Matrix(self, offset_bit:int) -> list:
+  def get8x8Matrix_LinearArray(self, offset_bit:int) -> list:
+    """
+    8x8のMatrixの情報の入った1次元配列で返す
+    """
     mat8x8 = [0] * 8
     # offset_bitが範囲外の可能性ががあるので，範囲内にする
     offset_bit %= 8*(len(self.__matrix[0]) - 1)
@@ -58,7 +64,18 @@ class FontConverter_RowDirection:
         mat8x8[i] = (self.__matrix[i][offset_byte] << offset_remainder) & 0xff
         mat8x8[i] |= (self.__matrix[i][offset_byte + 1] >> (8 - offset_remainder)) & mask
     return mat8x8
-    
+  
+  def get8x8Matrix_TwoDimensionalArray(self, offset_bit:int):
+    m = self.get8x8Matrix_LinearArray(offset_bit)
+    mat8x8 = [[0] * 8 for i in range (8)]
+    for i in range(8):
+      for j in range(8):
+        if (m[i] & (0x80 >> j) == (0x80 >> j)):
+          mat8x8[i][j] = 1
+        else:
+          mat8x8[i][j] = 0
+    return mat8x8
+
   def getMatrix(self):
     return self.__matrix
   
@@ -74,24 +91,14 @@ class FontConverter_RowDirection:
             s += '　'
       print(s)
 
-def viewMat8x8(mat):
-	for i in range(8):
-		s = ''
-		for j in range(8):
-			if(mat[i] & (0x80 >> j) == (0x80 >> j)):
-				s += '・'
-			else:
-				s += '　'
-		print(s)
-
-
 if __name__ == '__main__':
   import font_loader
+  from util import *
   font = font_loader.FontLoader('./misaki_gothic_2nd.bdf')
   d = font.getDictionary()
   row_converter = FontConverter_RowDirection(d)
   a = row_converter.convert('あいうえおABC')
   for i in range(100):
-     viewMat8x8(row_converter.get8x8Matrix(i))
+     viewMat8x8(row_converter.get8x8Matrix_LinearArray(i))
 
 
