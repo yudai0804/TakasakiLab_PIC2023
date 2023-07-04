@@ -63,6 +63,7 @@ if __name__ == "__main__":
 	from font_converter_row_direction import *
 	from font_loader import *
 	from util import *
+	import os
 	root = tkinter.Tk()
 	root.geometry('800x450')
 	s = '  WELCOME TMCIT  '
@@ -72,13 +73,28 @@ if __name__ == "__main__":
 	loader = FontLoader('./misaki_gothic_2nd.bdf')
 	converter = FontConverter_RowDirection(loader.getDictionary())
 	converter.convert(s)
-	viewMat8x8(converter.get8x8Matrix_ByteInfo(8))
 	print('8xn')
 	mat_8xn.output(converter.getMatrix_BitInfo())
 	# print(converter.getMatrix_BitInfo())
 	mat_8xn.pack()
 	print('8x8')
-	mat_8x8.output(converter.get8x8Matrix_BitInfo(8))
+	viewMat8x8(converter.get8x8Matrix_ByteInfo(0))
+	mat_8x8.output(converter.get8x8Matrix_BitInfo(0))
 	mat_8x8.pack()
-	# print(mat_8x8.getCanvasSize())
+
+	class OnUpdate:
+		def __init__(self, max_count):
+			self.__max_count = max_count
+			self.__count = 0
+		def onUpdate(self):
+			os.system('cls')
+			# viewMat8x8(converter.get8x8Matrix_ByteInfo(self.__count))
+			# print(self.__count)
+			mat_8x8.output(converter.get8x8Matrix_BitInfo(self.__count))
+			self.__count += 1
+			self.__count %= self.__max_count
+			root.after(100, self.onUpdate)
+
+	o = OnUpdate(getStringLendth(s)*8 - 8)
+	root.after(100, o.onUpdate())
 	root.mainloop()
