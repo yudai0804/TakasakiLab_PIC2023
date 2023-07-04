@@ -35,20 +35,18 @@ class LEDMatrix(tkinter.Canvas):
 				self.__matrix_y0[i][j] = y0
 				self.__matrix_x1[i][j] = x1
 				self.__matrix_y1[i][j] = y1
-				self.create_oval(x0, y0, x1, y1)
-				# self.coords(tag, fill='red')
+				self.create_oval(x0, y0, x1, y1, fill='white')
 	def output(self, output_matrix):
 		if(len(output_matrix) == self.__row and len(output_matrix[0]) == self.__column):
 			for i in range(self.__row):
 				for j in range(self.__column):
 					color = 'white'
-					# self.__matrix_output[i][j] = 0
 					self.__matrix_output[i][j] = 0
 					if(output_matrix[i][j] == 1):
 						color = 'red'
-						# self.__matrix_output[i][j] = 1
 						self.__matrix_output[i][j] = 1
-						print(color, self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j])
+						# print(color, self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j])
+					# print(color)
 					self.create_oval(self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j], fill=color)
 		else:
 			print("matrix error")
@@ -64,14 +62,23 @@ class LEDMatrix(tkinter.Canvas):
 if __name__ == "__main__":
 	from font_converter_row_direction import *
 	from font_loader import *
+	from util import *
 	root = tkinter.Tk()
 	root.geometry('800x450')
-	mat = LEDMatrix(root, radius=16, row=8, column=8, space_ratio=0.4)
+	s = '  WELCOME TMCIT  '
+	print(getStringLendth(s))
+	mat_8x8 = LEDMatrix(root, radius=12, row=8, column=8, space_ratio=0.4)
+	mat_8xn = LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
 	loader = FontLoader('./misaki_gothic_2nd.bdf')
 	converter = FontConverter_RowDirection(loader.getDictionary())
-	converter.convert('WELCOME TMCIT  ')
-	viewMat8x8(converter.get8x8Matrix(0))
-	mat.output(converter.get8x8Matrix(0))
-	mat.pack()
-	print(mat.getCanvasSize())
+	converter.convert(s)
+	viewMat8x8(converter.get8x8Matrix_ByteInfo(8))
+	print('8xn')
+	mat_8xn.output(converter.getMatrix_BitInfo())
+	# print(converter.getMatrix_BitInfo())
+	mat_8xn.pack()
+	print('8x8')
+	mat_8x8.output(converter.get8x8Matrix_BitInfo(8))
+	mat_8x8.pack()
+	# print(mat_8x8.getCanvasSize())
 	root.mainloop()
