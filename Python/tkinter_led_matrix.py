@@ -69,7 +69,7 @@ if __name__ == "__main__":
 	root = tkinter.Tk()
 	root.geometry('800x450')
 	s = '  WELCOME TMCIT  '
-	mat_8x8 = LEDMatrix(root, radius=11, row=8, column=8, space_ratio=0.4)
+	mat_8x8 = LEDMatrix(root, radius=6, row=8, column=8, space_ratio=0.4)
 	mat_8xn = LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
 	loader = FontLoader('./misaki_gothic_2nd.bdf')
 	converter = FontConverter_RowDirection(loader.getDictionary())
