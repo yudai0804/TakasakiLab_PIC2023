@@ -1,6 +1,6 @@
 # import font_loader
 """フォントデータを8行 len(self.__s)*8列の配列に変換する"""
-class FontConverter_ColumnDirection:
+class FontConverter_RowDirection:
   def __init__(self, d : dict) -> None:
     self.__d = d
     self.__s = ''
@@ -89,9 +89,9 @@ if __name__ == '__main__':
   import font_loader
   font = font_loader.FontLoader('./misaki_gothic_2nd.bdf')
   d = font.getDictionary()
-  column_converter = FontConverter_ColumnDirection(d)
-  a = column_converter.convert('あいうえおABC')
+  row_converter = FontConverter_RowDirection(d)
+  a = row_converter.convert('あいうえおABC')
   for i in range(100):
-     viewMat8x8(column_converter.get8x8Matrix(i))
+     viewMat8x8(row_converter.get8x8Matrix(i))
 
 

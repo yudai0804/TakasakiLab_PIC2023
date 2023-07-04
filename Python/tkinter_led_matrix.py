@@ -11,8 +11,8 @@ class LEDMatrix(tkinter.Canvas):
 		self.bind("<Motion>", self.onMotion)
 		self.bind("<ButtonRelease-1>", self.onClick)		
 		# 円を描画
-		width_offset = canvas_width // (column + 1)
-		height_offset = canvas_height // (row + 1)
+		width_offset = canvas_width / (column + 1)
+		height_offset = canvas_height / (row + 1)
 		for i in range (row):
 			for j in range (column):
 				tag = 'led[' + str(i) + '][' + str(j) + ']'
@@ -32,7 +32,7 @@ class LEDMatrix(tkinter.Canvas):
 if __name__ == "__main__":
 	root = tkinter.Tk()
 	root.geometry('800x450')
-	mat = LEDMatrix(root, 400, 400, 20, 8, 8)
+	mat = LEDMatrix(root, 300, 300, 10, 8, 8)
 	
 	mat.pack()
 	root.mainloop()
