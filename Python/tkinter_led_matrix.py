@@ -35,19 +35,21 @@ class LEDMatrix(tkinter.Canvas):
 				self.__matrix_y0[i][j] = y0
 				self.__matrix_x1[i][j] = x1
 				self.__matrix_y1[i][j] = y1
-				self.create_oval(x0, y0, x1, y1, fill='white')
+				s = 'led[' + str(i) + '][' + str(j) + ']' 
+				self.create_oval(x0, y0, x1, y1, fill='white', tags=s)
 	def output(self, output_matrix):
 		if(len(output_matrix) == self.__row and len(output_matrix[0]) == self.__column):
 			for i in range(self.__row):
 				for j in range(self.__column):
 					color = 'white'
-					self.__matrix_output[i][j] = 0
 					if(output_matrix[i][j] == 1):
 						color = 'red'
-						self.__matrix_output[i][j] = 1
-						# print(color, self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j])
-					# print(color)
-					self.create_oval(self.__matrix_x0[i][j], self.__matrix_y0[i][j], self.__matrix_x1[i][j], self.__matrix_y1[i][j], fill=color)
+					s = 'led[' + str(i) + '][' + str(j) + ']'
+					# 前回の色から変化があった場合のみ再度塗りつぶしを行う
+					if output_matrix[i][j] != self.__matrix_output[i][j]:
+						self.itemconfig(s, fill=color)
+			self.__matrix_output = output_matrix
+			print(len(self.find_all()))
 		else:
 			print("matrix error")
 		
@@ -67,17 +69,13 @@ if __name__ == "__main__":
 	root = tkinter.Tk()
 	root.geometry('800x450')
 	s = '  WELCOME TMCIT  '
-	print(getStringLendth(s))
-	mat_8x8 = LEDMatrix(root, radius=12, row=8, column=8, space_ratio=0.4)
+	mat_8x8 = LEDMatrix(root, radius=11, row=8, column=8, space_ratio=0.4)
 	mat_8xn = LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
 	loader = FontLoader('./misaki_gothic_2nd.bdf')
 	converter = FontConverter_RowDirection(loader.getDictionary())
 	converter.convert(s)
-	print('8xn')
 	mat_8xn.output(converter.getMatrix_BitInfo())
-	# print(converter.getMatrix_BitInfo())
 	mat_8xn.pack()
-	print('8x8')
 	viewMat8x8(converter.get8x8Matrix_ByteInfo(0))
 	mat_8x8.output(converter.get8x8Matrix_BitInfo(0))
 	mat_8x8.pack()
@@ -88,7 +86,7 @@ if __name__ == "__main__":
 			self.__count = 0
 		def onUpdate(self):
 			os.system('cls')
-			# viewMat8x8(converter.get8x8Matrix_ByteInfo(self.__count))
+			viewMat8x8(converter.get8x8Matrix_ByteInfo(self.__count))
 			# print(self.__count)
 			mat_8x8.output(converter.get8x8Matrix_BitInfo(self.__count))
 			self.__count += 1
