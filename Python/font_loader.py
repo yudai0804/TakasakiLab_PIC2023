@@ -25,7 +25,11 @@ class FontLoader:
 				# この後ビットマップ情報が来るため変数を初期化する
 				detect_start_bitmap = True
 			elif('ENDCHAR' in s):
-				# 辞書型変数に値を追加する
+				# ビットマップ情報が省略されている場合は先頭バイトのものから順に省略されているため，それの処理
+				for i in range(8 - tmp_bitmap_index):
+					tmp_bitmap.insert(0, 0)
+					tmp_bitmap.pop()
+				# 辞書型変数に値を追加する				
 				self.__dictionary[tmp_utf8_str] = tmp_bitmap
 				tmp_bitmap_index = 0
 				tmp_bitmap = [0] * 8
