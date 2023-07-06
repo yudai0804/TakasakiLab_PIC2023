@@ -1,0 +1,14 @@
+## PICKIT
+1 VPP  
+2 VCC  
+3 GND  
+4 DATA  
+5 CLOCK  
+
+## PIC
+### 690の場合
+4 VPP  
+1 VDD  
+20 VSS  
+19 ICSPDAT
+18 ICSPCLK  
