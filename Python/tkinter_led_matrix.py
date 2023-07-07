@@ -2,7 +2,7 @@ import tkinter
 import math
 
 class LEDMatrix(tkinter.Canvas):
-	def __init__(self, master, radius, row, column, space_ratio = 0.1):
+	def __init__(self, master, radius, row, column, space_ratio = 0.1, click_protect = True):
 		self.__radius = radius
 		self.__row = row
 		self.__column = column
@@ -17,7 +17,8 @@ class LEDMatrix(tkinter.Canvas):
 		self.__matrix_y0 = [[0] * self.__column for i in range (self.__row)]
 		self.__matrix_y1 = [[0] * self.__column for i in range (self.__row)]
 		# bind
-		self.bind("<ButtonRelease-1>", self.onClick)		
+		if click_protect == False:
+			self.bind("<ButtonRelease-1>", self.onClick)		
 		# 円を描画
 		x0 = y0 = x1 = y1 = 0
 		for i in range (self.__row):
@@ -78,7 +79,7 @@ if __name__ == "__main__":
 	root.geometry('800x450')
 	s = '  WELCOME TMCIT  '
 	# s = '  /  '
-	mat_8x8 = LEDMatrix(root, radius=6, row=8, column=8, space_ratio=0.4)
+	mat_8x8 = LEDMatrix(root, radius=6, row=8, column=8, space_ratio=0.4, click_protect=False)
 	mat_8xn = LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
 	loader = FontLoader('./misaki_gothic_2nd.bdf')
 	converter = FontConverter_RowDirection(loader.getDictionary())
@@ -94,6 +95,13 @@ if __name__ == "__main__":
 	button = tkinter.Button(root, text='generate', command= generate)
 	button.pack()
 
+	mode = tkinter.IntVar()
+	mode.set(0)
+	radio_button_mode_generator = tkinter.Radiobutton(root, value = 0, variable=mode, text='g')
+	radio_button_mode_animator = tkinter.Radiobutton(root, value = 1, variable=mode, text='a')
+	radio_button_mode_generator.pack()
+	radio_button_mode_animator.pack()
+
 	class OnUpdate:
 		def __init__(self, max_count):
 			self.__max_count = max_count
@@ -108,6 +116,6 @@ if __name__ == "__main__":
 			self.__count += 1
 			self.__count %= self.__max_count
 
-	# o = OnUpdate(getStringLendth(s)*8 - 8)
-	# root.after(100, o.onUpdate())
+	o = OnUpdate(getStringLendth(s)*8 - 8)
+	root.after(100, o.onUpdate())
 	root.mainloop()
