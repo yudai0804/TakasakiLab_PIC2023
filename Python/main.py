@@ -21,16 +21,19 @@ mat_8x8.output(converter.get8x8Matrix_BitInfo(0))
 mat_8x8.pack()
 def generate():
 	viewMat8x8_BitInfo(mat_8x8.getMatritxOutput())
-	writeOriginalFont('test', mat_8x8.getMatritxOutput())
+	name = input('ファイル名を入力してください:')
+	writeOriginalFont(name, mat_8x8.getMatritxOutput())
+def clear():
+	mat_8x8.clear()
+
 button = tkinter.Button(root, text='generate', command= generate)
 button.pack()
+clear_button = tkinter.Button(root, text='clear', command=clear)
+clear_button.pack()
 mode = tkinter.IntVar()
 mode.set(0)
-def mode_toggle():
-	mat_8x8.clear()
-	print('clear')
-radio_button_mode_generator = tkinter.Radiobutton(root, value = 0, variable=mode, text='任意の文字を生成する', command=mode_toggle)
-radio_button_mode_animator = tkinter.Radiobutton(root, value = 1, variable=mode, text='アニメーションを再生する', command=mode_toggle)
+radio_button_mode_generator = tkinter.Radiobutton(root, value = 0, variable=mode, text='任意の文字を生成する', command=clear)
+radio_button_mode_animator = tkinter.Radiobutton(root, value = 1, variable=mode, text='アニメーションを再生する', command=clear)
 radio_button_mode_generator.pack()
 radio_button_mode_animator.pack()
 
