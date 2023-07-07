@@ -16,13 +16,11 @@ converter = FontConverter_RowDirection(loader.getDictionary())
 converter.convert(s)
 mat_8xn.output(converter.getMatrix_BitInfo())
 mat_8xn.pack()
-viewMat8x8(converter.get8x8Matrix_ByteInfo(0))
-mat_8x8.output(converter.get8x8Matrix_BitInfo(0))
 mat_8x8.pack()
 def generate():
-	viewMat8x8_BitInfo(mat_8x8.getMatritxOutput())
+	viewMatBitInfo(mat_8x8.getMatrixOutput())
 	name = input('ファイル名を入力してください:')
-	writeOriginalFont(name, mat_8x8.getMatritxOutput())
+	writeOriginalFont(name, mat_8x8.getMatrixOutput())
 def clear():
 	os.system('cls')
 	mat_8x8.clear()
@@ -48,8 +46,9 @@ class OnUpdate:
 		root.after(100, self.onUpdate)
 	def shiftMatrix(self):
 		os.system('cls')
-		viewMat8x8(converter.get8x8Matrix_ByteInfo(self.__count))
-		mat_8x8.output(converter.get8x8Matrix_BitInfo(self.__count))
+		split_matrix = splitMatrix_BitInfo_RowDirection(converter.getMatrix_BitInfo(), self.__count)
+		viewMatBitInfo(split_matrix)
+		mat_8x8.output(split_matrix)
 		self.__count += 1
 		self.__count %= self.__max_count
 

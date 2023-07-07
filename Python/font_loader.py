@@ -40,23 +40,12 @@ class FontLoader:
 
 	def getDictionary(self) -> dict:
 		return self.__dictionary
-	
-	def fontPreview(self, _s : str) -> None:
-		print('preview font = ' + _s)
-		s = ''
-		for i in range(8):
-			s = ''
-			for j in range(8):
-				if(self.__dictionary[_s][i] & (0x80 >> j) == (0x80 >> j)):
-					s += '・'
-				else:
-					s += '　'
-			print(s)
 
 if __name__ == '__main__':
+	from util import *
 	font = FontLoader('./misaki_gothic_2nd.bdf')
 	d = font.getDictionary()
-	font.fontPreview('山')
-	font.fontPreview('口')
-	font.fontPreview('雄')
-	font.fontPreview('大')
+	viewMatByteInfo(d['山'])
+	viewMatByteInfo(d['口'])
+	viewMatByteInfo(d['雄'])
+	viewMatByteInfo(d['大'])
