@@ -2,6 +2,7 @@ from font_converter_row_direction import *
 from font_loader import *
 from util import *
 from tkinter_led_matrix import *
+from font_original_font_writer import *
 import os
 
 root = tkinter.Tk()
@@ -20,7 +21,7 @@ mat_8x8.output(converter.get8x8Matrix_BitInfo(0))
 mat_8x8.pack()
 def generate():
 	viewMat8x8_BitInfo(mat_8x8.getMatritxOutput())
-	
+	writeOriginalFont('test', mat_8x8.getMatritxOutput())
 button = tkinter.Button(root, text='generate', command= generate)
 button.pack()
 mode = tkinter.IntVar()
