@@ -24,6 +24,7 @@ def generate():
 	name = input('ファイル名を入力してください:')
 	writeOriginalFont(name, mat_8x8.getMatritxOutput())
 def clear():
+	os.system('cls')
 	mat_8x8.clear()
 
 button = tkinter.Button(root, text='generate', command= generate)
