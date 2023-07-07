@@ -49,14 +49,17 @@ class LEDMatrix(tkinter.Canvas):
 					if output_matrix[i][j] != self.__matrix_output[i][j]:
 						self.itemconfig(s, fill=color)
 			self.__matrix_output = output_matrix
-			print(len(self.find_all()))
+			# print(len(self.find_all()))
 		else:
 			print("matrix error")
+	def clear(self):
+		mat = [[0] * self.__column for i in range (self.__row)]
+		self.output(mat)
 	def onClick(self, event):
 		for i in range(self.__row):
 			for j in range(self.__column):
 				if((self.__matrix_x0[i][j] <= event.x <= self.__matrix_x1[i][j]) and (self.__matrix_y0[i][j] <= event.y <= self.__matrix_y1[i][j])):
-					print(i, j)
+					# print(i, j)
 					if(self.__matrix_output[i][j] == 1):
 						self.__matrix_output[i][j] = 0
 						s = 'led[' + str(i) + '][' + str(j) + ']' 
@@ -69,7 +72,7 @@ class LEDMatrix(tkinter.Canvas):
 		return self.__canvas_width, self.__canvas_height
 	def getMatritxOutput(self):
 		return self.__matrix_output
-#ラベルの表示
+
 if __name__ == "__main__":
 	from font_converter_row_direction import *
 	from font_loader import *
@@ -78,7 +81,6 @@ if __name__ == "__main__":
 	root = tkinter.Tk()
 	root.geometry('800x450')
 	s = '  WELCOME TMCIT  '
-	# s = '  /  '
 	mat_8x8 = LEDMatrix(root, radius=6, row=8, column=8, space_ratio=0.4, click_protect=False)
 	mat_8xn = LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
 	loader = FontLoader('./misaki_gothic_2nd.bdf')
@@ -95,13 +97,6 @@ if __name__ == "__main__":
 	button = tkinter.Button(root, text='generate', command= generate)
 	button.pack()
 
-	mode = tkinter.IntVar()
-	mode.set(0)
-	radio_button_mode_generator = tkinter.Radiobutton(root, value = 0, variable=mode, text='g')
-	radio_button_mode_animator = tkinter.Radiobutton(root, value = 1, variable=mode, text='a')
-	radio_button_mode_generator.pack()
-	radio_button_mode_animator.pack()
-
 	class OnUpdate:
 		def __init__(self, max_count):
 			self.__max_count = max_count
@@ -116,6 +111,11 @@ if __name__ == "__main__":
 			self.__count += 1
 			self.__count %= self.__max_count
 
-	o = OnUpdate(getStringLendth(s)*8 - 8)
-	root.after(100, o.onUpdate())
+	# テスト用
+	test_mode = ''
+	# test_mode = 'enable_animation'
+
+	if(test_mode == 'enable_animation'):
+		o = OnUpdate(getStringLendth(s)*8 - 8)
+		root.after(100, o.onUpdate())
 	root.mainloop()
