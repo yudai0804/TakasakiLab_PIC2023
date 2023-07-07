@@ -17,8 +17,7 @@ class LEDMatrix(tkinter.Canvas):
 		self.__matrix_y0 = [[0] * self.__column for i in range (self.__row)]
 		self.__matrix_y1 = [[0] * self.__column for i in range (self.__row)]
 		# bind
-		# self.bind("<Motion>", self.onMotion)
-		# self.bind("<ButtonRelease-1>", self.onClick)		
+		self.bind("<ButtonRelease-1>", self.onClick)		
 		# 円を描画
 		x0 = y0 = x1 = y1 = 0
 		for i in range (self.__row):
@@ -52,14 +51,23 @@ class LEDMatrix(tkinter.Canvas):
 			print(len(self.find_all()))
 		else:
 			print("matrix error")
-		
-	def onMotion(self, event):
-		print('x=' + str(event.x) + 'y = ' + str(event.y))
 	def onClick(self, event):
-		print('onClick')
-		print('x=' + str(event.x) + 'y = ' + str(event.y))
+		for i in range(self.__row):
+			for j in range(self.__column):
+				if((self.__matrix_x0[i][j] <= event.x <= self.__matrix_x1[i][j]) and (self.__matrix_y0[i][j] <= event.y <= self.__matrix_y1[i][j])):
+					print(i, j)
+					if(self.__matrix_output[i][j] == 1):
+						self.__matrix_output[i][j] = 0
+						s = 'led[' + str(i) + '][' + str(j) + ']' 
+						self.itemconfig(s, fill='white')
+					else:
+						self.__matrix_output[i][j] = 1
+						s = 'led[' + str(i) + '][' + str(j) + ']' 
+						self.itemconfig(s, fill='red')
 	def getCanvasSize(self):
 		return self.__canvas_width, self.__canvas_height
+	def getMatritxOutput(self):
+		return self.__matrix_output
 #ラベルの表示
 if __name__ == "__main__":
 	from font_converter_row_direction import *
@@ -80,6 +88,11 @@ if __name__ == "__main__":
 	viewMat8x8(converter.get8x8Matrix_ByteInfo(0))
 	mat_8x8.output(converter.get8x8Matrix_BitInfo(0))
 	mat_8x8.pack()
+	def generate():
+		viewMat8x8_BitInfo(mat_8x8.getMatritxOutput())
+		
+	button = tkinter.Button(root, text='generate', command= generate)
+	button.pack()
 
 	class OnUpdate:
 		def __init__(self, max_count):
@@ -95,6 +108,6 @@ if __name__ == "__main__":
 			self.__count += 1
 			self.__count %= self.__max_count
 
-	o = OnUpdate(getStringLendth(s)*8 - 8)
-	root.after(100, o.onUpdate())
+	# o = OnUpdate(getStringLendth(s)*8 - 8)
+	# root.after(100, o.onUpdate())
 	root.mainloop()
