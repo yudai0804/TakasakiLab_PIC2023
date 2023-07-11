@@ -1,1 +1,7 @@
-Error[129]   C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 4 : Expected (END)
+Warning[205] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 1 : Found directive in column 1. (LIST)
+Warning[205] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 4 : Found directive in column 1. (__CONFIG)
+Warning[205] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 5 : Found directive in column 1. (ORG)
+Message[302] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 10 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 13 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 16 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Warning[205] C:\USERS\YUDAI\DESKTOP\TAKASAKILAB_PIC2023\PIC\LEDMATRIX.X\MAIN.ASM 22 : Found directive in column 1. (END)
