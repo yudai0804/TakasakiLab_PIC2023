@@ -1,0 +1,34 @@
+MPLINK 5.08, LINKER
+Linker Map File - Created Tue Jul 11 17:02:37 2023
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000012
+                   .cinit    romdata   0x000009    program   0x000004
+.config_8007_BUILD/DEFAULT/PRODUCTION/MAIN.O       code   0x008007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00000a      
+                            0x008007    0x008007      
+            12 out of 4359 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     LOOP   0x000008    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix.X\main.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     LOOP   0x000008    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix.X\main.asm
+
+
