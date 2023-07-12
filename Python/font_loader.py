@@ -45,7 +45,14 @@ if __name__ == '__main__':
 	from util import *
 	font = FontLoader('./misaki_gothic_2nd.bdf')
 	d = font.getDictionary()
-	viewMatByteInfo(d['山'])
-	viewMatByteInfo(d['口'])
-	viewMatByteInfo(d['雄'])
-	viewMatByteInfo(d['大'])
+	
+	s = '山口雄大'
+	for i in range(len(s)):
+		print('\t;' + s[i])
+		for j in range(8):
+			print('\tMOVLW B\'{:08b}\''.format(d[s[i]][j]))
+			print('\tMOVWF MATRIX_ROW_' + str(j))
+		# viewMatByteInfo(d[s[i]])
+	# viewMatByteInfo(d['口'])
+	# viewMatByteInfo(d['雄'])
+	# viewMatByteInfo(d['大'])

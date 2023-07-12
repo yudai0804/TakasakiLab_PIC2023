@@ -53,12 +53,11 @@ def viewMatBitInfo(mat):
 def viewMatByteInfo(mat):
 	for i in range(len(mat)):
 		s = ''
-		for j in range(len(mat[0])):
-			for k in range(8):
-				if(mat[i][j] & (0x80 >> k) == (0x80 >> k)):
-					s += '・'
-				else:
-					s += '　'
+		for j in range(8):
+			if(mat[i] & (0x80 >> j) == (0x80 >> j)):
+				s += '・'
+			else:
+				s += '　'
 		print(s)
 
 def getStringLendth(text):
