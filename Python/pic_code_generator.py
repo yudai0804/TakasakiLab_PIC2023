@@ -1,5 +1,3 @@
-import matplotlib
-
 class PICCodeGenerator:
   def __init__(self, mat_size, led_delay, animation_hz):
     self.__mat_size = mat_size
