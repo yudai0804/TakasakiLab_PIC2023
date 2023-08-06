@@ -13,7 +13,9 @@ class PICCodeGenerator_Delay:
 		for a in range(self.__max_nop):
 			for b in range(self.__max_nop):
 					for c in range(256):
-						if(a + c * (b + 3) + 5 == cycle and (a + b) < nop_sum):
+						if(a + b >= nop_sum):
+							break
+						if(a + c * (b + 3) + 5 == cycle):
 							nop_sum = a+b
 							tmp[0] = a
 							tmp[1] = b
@@ -37,18 +39,21 @@ class PICCodeGenerator_Delay:
 		# 最適なNOPと繰り返し回数を計算
 		nop_sum = self.__max_nop
 		tmp = [-1] * 5
-		for a in range(self.__max_nop):
-			for b in range(self.__max_nop):
-				for c in range(self.__max_nop):
-					for d in range(256):
-						for e in range(256):
-							if(cycle == a + 5 + (b + (c + 3) * e + 4) * d and (a + b + c) < nop_sum):
+		for d in range(256):
+			for e in range(256):
+				for a in range(self.__max_nop):
+					for b in range(self.__max_nop):
+						for c in range(self.__max_nop):
+							if(a + b + c >= nop_sum):
+								break
+							if(cycle == a + 5 + (b + (c + 3) * e + 4) * d):
 								nop_sum = a + b + c
 								tmp[0] = a
 								tmp[1] = b
 								tmp[2] = c
 								tmp[3] = d
 								tmp[4] = e
+		# コードを生成
 		if(tmp[0] == -1):
 			return ""
 		result = subroutine_name + "\n"
@@ -60,18 +65,68 @@ class PICCodeGenerator_Delay:
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[4]) + "'\n"
+		result += "\tMOVWF " + self.__variable_name + "2\n"
+		result += self.__label_name + "2\n"
+		for i in range(tmp[2]):
+			result += "\tNOP\n"
+		result += "\tDECFSZ " + self.__variable_name + "2, F\n"
+		result += "\tGOTO " + self.__label_name + "2\n"
+		result += "\tDECFSZ " + self.__variable_name + "1, F\n"
+		result += "\tGOTO " + self.__label_name + "1\n"
+		result += "\tRETURN"
+		return result
+	def __delayThreeLoop(self, cycle : int, subroutine_name : str):
+		# 最適なNOPと繰り返し回数を計算
+		nop_sum = self.__max_nop
+		tmp = [-1] * 7
+		for e in range(256):
+			print(e)
+			for f in range(256):
+				for g in range(256):
+					for a in range(self.__max_nop):
+						for b in range(self.__max_nop):
+							for c in range(self.__max_nop):
+								for d in range(self.__max_nop):
+									if(a + b + c + d >= nop_sum):
+										break
+									if(cycle == a + 5 + (b + 4 + (c + 4 + (d + 3) * g) * f) * e ):
+										nop_sum = a + b + c + d
+										tmp[0] = a
+										tmp[1] = b
+										tmp[2] = c
+										tmp[3] = d
+										tmp[4] = e
+										tmp[5] = f
+										tmp[6] = g
+		# コードを生成
+		if(tmp[0] == -1):
+			return ""
+		result = subroutine_name + "\n"
+		for i in range(tmp[0]):
+			result += "\tNOP\n"
+		result += "\tMOVLW D'" + str(tmp[4]) + "'\n"
+		result += "\tMOVWF " + self.__variable_name + "1\n"
+		result += self.__label_name + "1\n"
+		for i in range(tmp[1]):
+			result += "\tNOP\n"
+		result += "\tMOVLW D'" + str(tmp[5]) + "'\n"
 		result += "\tMOVWF " + self.__variable_name + "1\n"
 		result += self.__label_name + "2\n"
 		for i in range(tmp[2]):
 			result += "\tNOP\n"
+		result += "\tMOVLW D'" + str(tmp[6]) + "'\n"
+		result += "\tMOVWF " + self.__variable_name + "3\n"
+		result += self.__label_name + "3\n"
+		for i in range(tmp[3]):
+			result += "\tNOP\n"
+		result += "\tDECFSZ " + self.__variable_name + "3, F\n"
+		result += "\tGOTO " + self.__label_name + "3\n"
 		result += "\tDECFSZ " + self.__variable_name + "2, F\n"
 		result += "\tGOTO " + self.__label_name + "2\n"
 		result += "\tDECFSZ " + self.__variable_name + ", F\n"
 		result += "\tGOTO " + self.__label_name + "1\n"
 		result += "\tRETURN"
 		return result
-	def __delayThreeLoop(self, cycle : int, subroutine_name : str):
-		return ""
 	def generateDelay(self, delay : int, delay_unit : str, subroutine_name : str):
 		if(delay <= 0):
 			self.__result = ""
@@ -96,7 +151,7 @@ class PICCodeGenerator_Delay:
 		MAX_WEIGHT = 10000
 		res_weight = MAX_WEIGHT
 		# res[0] = self.__delayOneLoop(cycle, subroutine_name)
-		res[1] = self.__delayTwoLoop(cycle, subroutine_name)
+		# res[1] = self.__delayTwoLoop(cycle, subroutine_name)
 		res[2] = self.__delayThreeLoop(cycle, subroutine_name)
 		# 生成に成功しているものの中で，一番文字数が少ないものを求める
 		# ラベルは文字数に含まないように考慮している
