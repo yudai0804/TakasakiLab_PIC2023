@@ -36,7 +36,7 @@ class FontConverter_RowDirection:
 					for j in range(8):
 						matrix[j][index] = d_matrix[j]
 					index += 1
-		if(index != len(self.__s)):
+		if index != len(self.__s):
 			# 最後に不要な要素を削除
 			for j in range(8):
 				if half_word_counter % 2 == 1:

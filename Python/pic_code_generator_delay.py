@@ -12,22 +12,22 @@ class PICCodeGenerator_Delay:
 		tmp = [-1] * 3
 		for a in range(self.__max_nop):
 				x = delay_cycle - a - 5
-				if(x < 3):
+				if x < 3:
 					break
 				for c in range(1, 256):
-					if(x % c != 0):
+					if x % c != 0:
 						continue
 					b = x // c - 3
-					if(b < 0):
+					if b < 0:
 						break
 					sum = a + b
-					if(sum < nop_sum):
+					if sum < nop_sum:
 						nop_sum = sum
 						tmp[0] = a
 						tmp[1] = b
 						tmp[2] = c
 	# コードを生成
-		if(tmp[0] == -1):
+		if tmp[0] == -1:
 			return ""
 		result = subroutine_name + "\n"
 		for i in range(tmp[0]):
@@ -47,23 +47,23 @@ class PICCodeGenerator_Delay:
 		tmp = [-1] * 5
 		for a in range(self.__max_nop):
 			x = delay_cycle - a - 5
-			if(x < 7):
+			if x < 7:
 				break
 			for d in range(1, 256):
-				if(x % d != 0):
+				if x % d != 0:
 					continue
 				for b in range(self.__max_nop):
 					y = x // d - b - 4
-					if(y < 3):
+					if y < 3:
 						break
 					for e in range(1, 256):
-						if(y % e != 0):
+						if y % e != 0:
 							continue
 						c = y // e - 3
-						if(c < 0):
+						if c < 0:
 							break
 						sum = a + b + c
-						if(sum < nop_sum):
+						if sum < nop_sum:
 							nop_sum = sum
 							tmp[0] = a
 							tmp[1] = b
@@ -71,7 +71,7 @@ class PICCodeGenerator_Delay:
 							tmp[3] = d
 							tmp[4] = e
 		# コードを生成
-		if(tmp[0] == -1):
+		if tmp[0] == -1:
 			return ""
 		result = subroutine_name + "\n"
 		for i in range(tmp[0]):
@@ -98,30 +98,30 @@ class PICCodeGenerator_Delay:
 		tmp = [-1] * 7
 		for a in range(self.__max_nop):
 			x = delay_cycle - a - 5
-			if(x < 11):
+			if x < 11:
 				break
 			for e in range(1, 256):
-				if(x % e != 0):
+				if x % e != 0:
 					continue
 				for b in range(self.__max_nop):
 					y = x // e - b - 4
-					if(y < 7):
+					if y < 7:
 						break
 					for f in range(1, 256):
-						if(y % f != 0):
+						if y % f != 0:
 							continue
 						for c in range(self.__max_nop):
 							z = y // f - c - 4
-							if(z < 3):
+							if z < 3:
 								break
 							for g in range(1, 256):
-								if(z % g != 0):
+								if z % g != 0:
 									continue
 								d = z // g - 3
-								if(d < 0):
+								if d < 0:
 									break
 								sum = a + b + c + d
-								if(sum < nop_sum):
+								if sum < nop_sum:
 									nop_sum = sum
 									tmp[0] = a
 									tmp[1] = b
@@ -132,7 +132,7 @@ class PICCodeGenerator_Delay:
 									tmp[6] = g
 
 		# コードを生成
-		if(tmp[0] == -1):
+		if tmp[0] == -1:
 			return ""
 		result = subroutine_name + "\n"
 		for i in range(tmp[0]):
@@ -161,20 +161,20 @@ class PICCodeGenerator_Delay:
 		result += "\tRETURN"
 		return result
 	def generateDelay(self, delay : int, delay_unit : str, subroutine_name : str):
-		if(delay <= 0):
+		if delay <= 0:
 			self.__result = ";Generate Failed\n"
 			return
 		# 生成したいcycle数を計算
 		delay_ns = delay
 		#delay_unit == "ns"のときは何もしなくてよい
-		if(delay_unit == "ns" or delay_unit == "n"):
+		if delay_unit == "ns" or delay_unit == "n":
 			dummy = 0
 			# 何もしない
-		if(delay_unit == "us" or delay_unit == "u"):
+		if delay_unit == "us" or delay_unit == "u":
 			delay_ns *= 1000
-		elif(delay_unit == "ms" or delay_unit == "m"):
+		elif delay_unit == "ms" or delay_unit == "m":
 			delay_ns *= 1000000
-		elif(delay_unit == "s"):
+		elif delay_unit == "s":
 			delay_ns *= 1000000000
 		else:
 			return
@@ -190,15 +190,15 @@ class PICCodeGenerator_Delay:
 		# ラベルは文字数に含まないように考慮している
 		for i in range(3):
 			w = len(res[i]) - (i+2)
-			if(0 < w < res_weight):
+			if 0 < w < res_weight:
 				res_weight = w
-		if(res_weight == MAX_WEIGHT):
+		if res_weight == MAX_WEIGHT:
 			# 生成に失敗していた場合は文字列を空にしてreturn
 			return ";Generate Failed\n"
 		# 同じ重みを持っているパラメーターがあればresultに代入
 		for i in range(3):
 			w = len(res[i]) - (i+2)
-			if(w == res_weight):
+			if w == res_weight:
 				self.__result = res[i]
 				return self.__result
 

@@ -14,7 +14,7 @@ def convertMat_BitToByte(mat):
 	_mat = []
 	m = []
 	column = 0
-	if((len(mat[0]) % 8) != 0):
+	if (len(mat[0]) % 8) != 0:
 		print('matrix error')
 		return
 	else:
@@ -36,7 +36,7 @@ def convertMat_ByteToBit(mat):
 	for i in range(len(mat)):
 		for j in range(len(mat[0])):
 			for k in range(8):
-				if(mat[i][j] & (0x80 >> k) == (0x80 >> k)):
+				if mat[i][j] & (0x80 >> k) == (0x80 >> k):
 					m[i][8*j+k] = 1
 	return m
 
@@ -44,7 +44,7 @@ def viewMatBitInfo(mat):
 	for i in range(len(mat)):
 		s = ''
 		for j in range(len(mat[0])):
-			if(mat[i][j] == 1):
+			if mat[i][j] == 1:
 				s += '・'
 			else:
 				s += '　'
@@ -54,7 +54,7 @@ def viewMatByteInfo(mat):
 	for i in range(len(mat)):
 		s = ''
 		for j in range(8):
-			if(mat[i] & (0x80 >> j) == (0x80 >> j)):
+			if mat[i] & (0x80 >> j) == (0x80 >> j):
 				s += '・'
 			else:
 				s += '　'
