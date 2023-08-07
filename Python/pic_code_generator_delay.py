@@ -6,12 +6,12 @@ class PICCodeGenerator_Delay:
 		self.__variable_name = variable_name
 		self.__result = ";Generate Failed\n"
 		self.__max_str_len = 10000
-	def __delayOneLoop(self, cycle : int, subroutine_name : str):
+	def __delayOneLoop(self, delay_cycle : int, subroutine_name : str):
 		# 最適なNOPと繰り返し回数を計算
 		nop_sum = self.__max_nop
 		tmp = [-1] * 3
 		for a in range(self.__max_nop):
-				x = cycle - a - 5
+				x = delay_cycle - a - 5
 				if(x < 3):
 					break
 				for c in range(1, 256):
@@ -41,12 +41,12 @@ class PICCodeGenerator_Delay:
 		result += "\tGOTO " + self.__label_name + "1\n"
 		result += "\tRETURN"
 		return result
-	def __delayTwoLoop(self, cycle : int, subroutine_name : str):
+	def __delayTwoLoop(self, delay_cycle : int, subroutine_name : str):
 		# 最適なNOPと繰り返し回数を計算
 		nop_sum = self.__max_nop
 		tmp = [-1] * 5
 		for a in range(self.__max_nop):
-			x = cycle - a - 5
+			x = delay_cycle - a - 5
 			if(x < 7):
 				break
 			for d in range(1, 256):
@@ -92,12 +92,12 @@ class PICCodeGenerator_Delay:
 		result += "\tGOTO " + self.__label_name + "1\n"
 		result += "\tRETURN"
 		return result
-	def __delayThreeLoop(self, cycle : int, subroutine_name : str):
+	def __delayThreeLoop(self, delay_cycle : int, subroutine_name : str):
 		# 最適なNOPと繰り返し回数を計算
 		nop_sum = self.__max_nop
 		tmp = [-1] * 7
 		for a in range(self.__max_nop):
-			x = cycle - a - 5
+			x = delay_cycle - a - 5
 			if(x < 11):
 				break
 			for e in range(1, 256):
@@ -178,14 +178,14 @@ class PICCodeGenerator_Delay:
 			delay_ns *= 1000000000
 		else:
 			return
-		cycle = delay_ns // self.__one_cycle_ns
+		delay_cycle = delay_ns // self.__one_cycle_ns
 		# 1重ループから3重ループまでの計算結果を比較する
 		res = [""] * 3
 		MAX_WEIGHT = 10000
 		res_weight = MAX_WEIGHT
-		res[0] = self.__delayOneLoop(cycle, subroutine_name)
-		res[1] = self.__delayTwoLoop(cycle, subroutine_name)
-		res[2] = self.__delayThreeLoop(cycle, subroutine_name)
+		res[0] = self.__delayOneLoop(delay_cycle, subroutine_name)
+		res[1] = self.__delayTwoLoop(delay_cycle, subroutine_name)
+		res[2] = self.__delayThreeLoop(delay_cycle, subroutine_name)
 		# 生成に成功しているものの中で，一番文字数が少ないものを求める
 		# ラベルは文字数に含まないように考慮している
 		for i in range(3):
@@ -207,5 +207,5 @@ class PICCodeGenerator_Delay:
 
 if __name__ == '__main__':
 	pic = PICCodeGenerator_Delay(1000)
-	result = pic.generateDelay(100000, "us", "Timer")
+	result = pic.generateDelay(1000, "us", "Timer")
 	print(result)
