@@ -33,9 +33,9 @@ class OriginalFontLoader:
 		return self.__d
 
 if __name__ == '__main__':
-	from util import *
+	from led_matrix import *
 	loader = OriginalFontLoader()
 	d = loader.getDictionary()
 	for k in d.keys():
 		print(k)
-		viewMatBitInfo(d[k])
+		viewBitMatrix(d[k])

@@ -58,13 +58,12 @@ class FontConverter_RowDirection:
 
 if __name__ == '__main__':
 	import font_loader
-	from util import *
+	from led_matrix import *
 	font = font_loader.FontLoader('./misaki_gothic_2nd.bdf')
 	d = font.getDictionary()
 	row_converter = FontConverter_RowDirection(d)
 	a = row_converter.convert('あいうえおABC')
-	print(a)
+	m = LEDMatrix(mat=a)
 	for i in range(100):
-		viewMatBitInfo(splitMatrix_BitInfo_RowDirection(a, i))
-
+		viewBitMatrix(m.getSplitedMatrix(column_offset=i))
 

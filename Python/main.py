@@ -3,14 +3,15 @@ from font_loader import *
 from util import *
 from tkinter_led_matrix import *
 from font_original_font_writer import *
+from led_matrix import *
 import os
 
 root = tkinter.Tk()
 root.geometry('800x450')
 s = '  WELCOME TMCIT'
 
-mat_8x8 = LEDMatrix(root, radius=6, row=8, column=8, space_ratio=0.4, click_protect=False)
-mat_8xn = LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
+mat_8x8 = Tkinter_LEDMatrix(root, radius=6, row=8, column=8, space_ratio=0.4, click_protect=False)
+mat_8xn = Tkinter_LEDMatrix(root, radius=4, row=8, column=getStringLendth(s)*8, space_ratio=0.4)
 loader = FontLoader('./misaki_gothic_2nd.bdf')
 converter = FontConverter_RowDirection(loader.getDictionary())
 converter.convert(s)
@@ -18,7 +19,7 @@ mat_8xn.output(converter.getMatrix_BitInfo())
 mat_8xn.pack()
 mat_8x8.pack()
 def generate():
-	viewMatBitInfo(mat_8x8.getMatrixOutput())
+	viewBitMatrix(mat_8x8.getMatrixOutput())
 	name = input('ファイル名を入力してください:')
 	writeOriginalFont(name, mat_8x8.getMatrixOutput())
 def clear():
@@ -46,8 +47,9 @@ class OnUpdate:
 		root.after(100, self.onUpdate)
 	def shiftMatrix(self):
 		os.system('cls')
-		split_matrix = splitMatrix_BitInfo_RowDirection(converter.getMatrix_BitInfo(), self.__count)
-		viewMatBitInfo(split_matrix)
+		mat = LEDMatrix(mat=converter.getMatrix_BitInfo())
+		split_matrix = mat.getSplitedMatrix(column_offset=self.__count)
+		viewBitMatrix(split_matrix)
 		mat_8x8.output(split_matrix)
 		self.__count += 1
 		self.__count %= self.__max_count

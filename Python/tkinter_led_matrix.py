@@ -1,7 +1,7 @@
 import tkinter
 import math
 
-class LEDMatrix(tkinter.Canvas):
+class Tkinter_LEDMatrix(tkinter.Canvas):
 	def __init__(self, master, radius, row, column, space_ratio = 0.1, click_protect = True):
 		self.__radius = radius
 		self.__row = row
