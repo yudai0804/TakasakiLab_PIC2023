@@ -17,14 +17,14 @@ class FontLoader:
 			lines = [s.replace('\n', '') for s in f.readlines()]
 		# 辞書型に変換
 		for s in lines:
-			if(s.startswith('ENCODING ')):
+			if s.startswith('ENCODING '):
 				s = s.replace('ENCODING ', '')
 				# 文字コードからstrに変換
 				tmp_utf8_str = chr(int(s))
-			elif('BITMAP' in s):
+			elif 'BITMAP' in s:
 				# この後ビットマップ情報が来るため変数を初期化する
 				detect_start_bitmap = True
-			elif('ENDCHAR' in s):
+			elif 'ENDCHAR' in s:
 				# ビットマップ情報が省略されている場合は先頭バイトのものから順に省略されているため，それの処理
 				for i in range(8 - tmp_bitmap_index):
 					tmp_bitmap.insert(0, 0)
@@ -34,7 +34,7 @@ class FontLoader:
 				tmp_bitmap_index = 0
 				tmp_bitmap = [0] * 8
 				detect_start_bitmap = False
-			elif(detect_start_bitmap == True):
+			elif detect_start_bitmap == True:
 				tmp_bitmap[tmp_bitmap_index] = int(s, 16)
 				tmp_bitmap_index += 1
 

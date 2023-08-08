@@ -36,14 +36,21 @@ class FontConverter_RowDirection:
 					for j in range(8):
 						matrix[j][index] = d_matrix[j]
 					index += 1
-		if(index != len(self.__s)):
+		if index != len(self.__s):
 			# 最後に不要な要素を削除
 			for j in range(8):
 				if half_word_counter % 2 == 1:
 					del matrix[j][index+1:]
 				else:
 					del matrix[j][index:]
-		self.__matrix = convertMat_ByteToBit(matrix)
+		# バイトから8行8*n列のビットに変換
+		self.__matrix = [[0] * (len(matrix[0]) * 8) for i in range(len(matrix))]
+		for i in range(len(matrix)):
+			for j in range(len(matrix[0])):
+				for k in range(8):
+					if matrix[i][j] & (0x80 >> k) == (0x80 >> k):
+						self.__matrix[i][8*j+k] = 1
+
 		return self.__matrix    
 
 	def getMatrix_BitInfo(self):
@@ -51,12 +58,13 @@ class FontConverter_RowDirection:
 
 if __name__ == '__main__':
 	import font_loader
+	from led_matrix import *
 	from util import *
 	font = font_loader.FontLoader('./misaki_gothic_2nd.bdf')
 	d = font.getDictionary()
 	row_converter = FontConverter_RowDirection(d)
 	a = row_converter.convert('あいうえおABC')
+	m = LEDMatrix(mat=a)
 	for i in range(100):
-		viewMatBitInfo(splitMatrix_BitInfo_RowDirection(a, i))
-
+		printBitMatrix(m.getSplitedMatrix(column_offset=i))
 

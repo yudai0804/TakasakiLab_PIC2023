@@ -38,4 +38,4 @@ if __name__ == '__main__':
 	d = loader.getDictionary()
 	for k in d.keys():
 		print(k)
-		viewMatBitInfo(d[k])
+		printBitMatrix(d[k])
