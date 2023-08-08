@@ -69,31 +69,10 @@ def convertMat_BitToByte(mat):
 				m[i] += 1 << (7 - j)
 	return m
 
-def viewBitMatrix(mat):
-	"""ビットで表された行列を表示する"""
-	for i in range(len(mat)):
-		s = ''
-		for j in range(len(mat[0])):
-			if mat[i][j] == 1:
-				s += '・'
-			else:
-				s += '　'
-		print(s)
-
-def viewByteMatrix(mat):
-	"""8バイトに圧縮された8x8の行列を表示する"""
-	for i in range(len(mat)):
-		s = ''
-		for j in range(8):
-			if mat[i] & (0x80 >> j) == (0x80 >> j):
-				s += '・'
-			else:
-				s += '　'
-		print(s)
-
 if __name__ == '__main__':
 	import os
 	import time
+	from util import *
 	m = [LEDMatrix(8, 8)] * 4
 	bit =[[0, 0, 0, 0, 0, 0, 0, 0], 
 				[0, 0, 0, 0, 0, 0, 0, 0],
@@ -105,9 +84,9 @@ if __name__ == '__main__':
 				[0, 1, 0, 0, 0, 0, 0, 0]]
 	for i in range(4):
 		m[i].setMatrix(bit)
-	# viewBitMatrix(m[0].getSplitedMatrix())
-	# viewBitMatrix(m[0].getMatrix())
-	viewByteMatrix(convertMat_BitToByte(m[0].getMatrix()))
-	viewBitMatrix(m[1].rotate90())
-	viewBitMatrix(m[2].rotate180())
-	viewBitMatrix(m[3].rotate270())
+	# printBitMatrix(m[0].getSplitedMatrix())
+	# printBitMatrix(m[0].getMatrix())
+	printByteMatrix(convertMat_BitToByte(m[0].getMatrix()))
+	printBitMatrix(m[1].rotate90())
+	printBitMatrix(m[2].rotate180())
+	printBitMatrix(m[3].rotate270())

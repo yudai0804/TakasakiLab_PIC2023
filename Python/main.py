@@ -19,7 +19,7 @@ mat_8xn.output(converter.getMatrix_BitInfo())
 mat_8xn.pack()
 mat_8x8.pack()
 def generate():
-	viewBitMatrix(mat_8x8.getMatrixOutput())
+	printBitMatrix(mat_8x8.getMatrixOutput())
 	name = input('ファイル名を入力してください:')
 	writeOriginalFont(name, mat_8x8.getMatrixOutput())
 def clear():
@@ -49,7 +49,7 @@ class OnUpdate:
 		os.system('cls')
 		mat = LEDMatrix(mat=converter.getMatrix_BitInfo())
 		split_matrix = mat.getSplitedMatrix(column_offset=self.__count)
-		viewBitMatrix(split_matrix)
+		printBitMatrix(split_matrix)
 		mat_8x8.output(split_matrix)
 		self.__count += 1
 		self.__count %= self.__max_count

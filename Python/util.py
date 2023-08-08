@@ -12,3 +12,25 @@ def getStringLendth(text):
 	mod = count % 2
 	count = count //2 + mod
 	return count
+
+def printBitMatrix(mat):
+	"""ビットで表された行列を表示する"""
+	for i in range(len(mat)):
+		s = ''
+		for j in range(len(mat[0])):
+			if mat[i][j] == 1:
+				s += '・'
+			else:
+				s += '　'
+		print(s)
+
+def printByteMatrix(mat):
+	"""8バイトに圧縮された8x8の行列を表示する"""
+	for i in range(len(mat)):
+		s = ''
+		for j in range(8):
+			if mat[i] & (0x80 >> j) == (0x80 >> j):
+				s += '・'
+			else:
+				s += '　'
+		print(s)
