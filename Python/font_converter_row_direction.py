@@ -43,7 +43,14 @@ class FontConverter_RowDirection:
 					del matrix[j][index+1:]
 				else:
 					del matrix[j][index:]
-		self.__matrix = convertMat_ByteToBit(matrix)
+		# バイトから8行8*n列のビットに変換
+		self.__matrix = [[0] * (len(matrix[0]) * 8) for i in range(len(matrix))]
+		for i in range(len(matrix)):
+			for j in range(len(matrix[0])):
+				for k in range(8):
+					if matrix[i][j] & (0x80 >> k) == (0x80 >> k):
+						self.__matrix[i][8*j+k] = 1
+
 		return self.__matrix    
 
 	def getMatrix_BitInfo(self):
@@ -56,7 +63,9 @@ if __name__ == '__main__':
 	d = font.getDictionary()
 	row_converter = FontConverter_RowDirection(d)
 	a = row_converter.convert('あいうえおABC')
-	for i in range(100):
-		viewMatBitInfo(splitMatrix_BitInfo_RowDirection(a, i))
+	print(splitMatrix_BitInfo_RowDirection(a, 8))
+	# print(a)
+	# for i in range(100):
+		# viewMatBitInfo(splitMatrix_BitInfo_RowDirection(a, i))
 
 
