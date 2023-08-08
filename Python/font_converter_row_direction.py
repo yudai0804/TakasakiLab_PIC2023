@@ -63,9 +63,8 @@ if __name__ == '__main__':
 	d = font.getDictionary()
 	row_converter = FontConverter_RowDirection(d)
 	a = row_converter.convert('あいうえおABC')
-	print(splitMatrix_BitInfo_RowDirection(a, 8))
-	# print(a)
-	# for i in range(100):
-		# viewMatBitInfo(splitMatrix_BitInfo_RowDirection(a, i))
+	print(a)
+	for i in range(100):
+		viewMatBitInfo(splitMatrix_BitInfo_RowDirection(a, i))
 
 
