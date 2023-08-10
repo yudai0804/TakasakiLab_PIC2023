@@ -207,5 +207,5 @@ class PICCodeGenerator_Delay:
 
 if __name__ == '__main__':
 	pic = PICCodeGenerator_Delay(1000)
-	result = pic.generateDelay(10, "ms", "Timer")
+	result = pic.generateDelay(10, "s", "Timer")
 	print(result)

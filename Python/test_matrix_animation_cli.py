@@ -10,7 +10,6 @@ d = f.getDictionary()
 row_converter = FontConverter_RowDirection(d)
 # a = row_converter.convert('  WELCOME TMCIT')
 m = LEDMatrix(mat=row_converter.convert('  産技高専へようこそ'))
-
 for i in range(10000):
   printBitMatrix(m.getSplitedMatrix(column_offset=i))
   time.sleep(0.1)
