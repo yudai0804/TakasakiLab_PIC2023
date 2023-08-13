@@ -8,4 +8,4 @@ LEDマトリクスのフォントは[美咲フォント](https://littlelimit.net
 MPLAB 5.00
 
 ## 使うPIC
-[PIC16F1827](http://ww1.microchip.com/downloads/en/devicedoc/41391d.pdf)
+[PIC16F1938](http://ww1.microchip.com/downloads/jp/DeviceDoc/41574A_JP.pdf)
