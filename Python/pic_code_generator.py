@@ -55,15 +55,14 @@ class PICCodeGenerator:
     byte = []
     output = ""
     org_cnt = 0
+    # 条件に応じてbitからbyteに変換する
     if is_row_direction_slide != None:
-      # byteデータに変換
       for i in range(len(mat[0]) // 8):
         split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
         tmp_byte = convertMat_BitToByte(split_bit)
         for j in range(8):
           byte.append(tmp_byte[j])
     elif is_column_direction_slide != None:
-      # byteデータに変換
       for i in range(len(mat) // 8):
         split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
         tmp_byte = convertMat_BitToByte(split_bit)
