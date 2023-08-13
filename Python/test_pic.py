@@ -13,7 +13,7 @@ row_converter = FontConverter_RowDirection(d)
 s = '  産技高専へようこそ！'
 s_len = getStringLendth(s)
 m = LEDMatrix(mat=row_converter.convert(s))
-m_mat = m.getMatrix()
+m_mat = m.get()
 bit = [[0] * 8 for i in range((s_len * 8))]
 byte = []
 # 80*12で最大960バイト、120文字
