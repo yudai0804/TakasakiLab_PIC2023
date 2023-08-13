@@ -25,7 +25,7 @@ for i in range(len(bit)):
   bit[i] = m.getSplitedMatrix(column_offset=i)
   tmp_byte = convertMat_BitToByte(bit[i])
   # print(tmp_byte)
-  printByteMatrix(tmp_byte)
+  # printByteMatrix#(tmp_byte)
   byte.append(tmp_byte)
 for i in range(len(byte)):
   for j in range(8):
