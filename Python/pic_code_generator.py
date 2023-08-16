@@ -35,8 +35,14 @@ class PICCodeGenerator:
     self.__animation_hz = animation_hz
     self.__one_cycle_ns = 1000
     self.__output = ""
+    # 最後の要素の次のアドレス
+    self.__end_addr = 0
 
-  def __generateConfig(self):
+  def __generateConfig( self,
+                        led_matrix : LEDMatrix, 
+                        is_row_direction_slide = None,
+                        is_column_direction_slide = None,
+                        is_no_slide = None):
     # configを設定
     self.__output += "LIST P=PIC16F1938\n"
     self.__output += "#include<p16f1938.inc>\n"
@@ -46,6 +52,17 @@ class PICCodeGenerator:
       self.__output += "MATRIX" + str(i) + "\tEQU\t" + str(hex(112 + i) + "\n")
     for i in range(3):
       self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
+    # 書き込んだデータの末尾
+    byte_size = 0
+    mat = led_matrix.get()
+    if is_row_direction_slide != None:
+      byte_size = len(mat[0])
+    elif is_column_direction_slide != None:
+      byte_size = len(mat)
+    elif is_no_slide != None:
+      byte_size = len(mat[0]) * 8
+    # 最後の要素の次のアドレス
+    self.__end_addr = (byte_size // 80) * 128 + (byte_size % 80) + 32
   def __generateMatrixData( self,
                             led_matrix : LEDMatrix, 
                             is_row_direction_slide = None,
@@ -88,6 +105,67 @@ class PICCodeGenerator:
       output = output.rstrip(",")
       output += "\n"
     self.__output += output
+  def __generateInitialize(self):
+    output = ""
+    output += "ORG\t0x0000\n"
+    # バンク1に切り替え
+    output += "\tBSF BSR, BSR0\n"
+    # OSCCONレジスタを捜査して，周期を4MHzにする
+    output += "\tMOVLW B'01101000'\n"
+    output += "\tMOVWF OSCCON\n"
+    # PORTAを出力にする
+    output += "\tCLRF TRISA\n"
+    # PORTCを出力にする
+    output += "\tCLRF TRISC\n"
+    # バンク0に切り替え
+    output += "\tBCF BSR, BSR0\n"
+    # PORTAとPORTCの出力を0にする
+    output += "\tCLRF PORTA\n"
+    output += "\tCLRF PORTC\n"
+    # FSRレジスタを0x020番地に合わせる
+    output += "\tMOVWF FSR0H\n"
+    output += "\tMOVLW 0x20\n"
+    output += "\tMOVWF FSR0L\n"
+    self.__output += output
+  def __generateLoadData( self,
+                          led_matrix : LEDMatrix, 
+                          is_row_direction_slide = None,
+                          is_column_direction_slide = None,
+                          is_no_slide = None):
+    output = "LOAD\n"
+    if is_row_direction_slide != None or is_column_direction_slide != None:
+      # データをシフト
+      for i in range(1, 8):
+        output += "\tMOVF MATRIX" + str(i) + ", W\n"
+        output += "\tMOVWF MATRIX" + str(i - 1) + "\n"
+      # MATRIX7のデータをFSR0から読む
+      output += "\tMOVIW 0[FSR0]\n"
+      output += "\tMOVWF MATRIX7\n"
+      output += "\tADDFSR FSR0, 0x01\n"
+    elif is_no_slide != None:
+      # データをFSR0から読む
+      for i in range(8):
+        output += "\tMOVIW 0[FSR0]\n"
+        output += "\tMOVWF MATRIX" + str(i) + "\n"
+        output += "\tADDFSR FSR0, 0x01\n"
+    # end_addrと一致していた場合はFSR0を0x20に戻す
+    end_addr_h = self.__end_addr // 0xff
+    end_addr_l = self.__end_addr & 0xff
+    output += "\tMOVLW " + str(hex(end_addr_h)) + "\n"
+    output += "\tSUBWF FSR0H, W\n"
+    output += "\tBTFSS STATUS, Z\n"
+    output += "\tRETURN\n"
+    output += "\tMOVLW " + str(hex(end_addr_l)) + "\n"
+    output += "\tSUBWF FSR0L, W\n"
+    output += "\tBTFSS STATUS, Z\n"
+    output += "\tRETURN\n"
+    # FSR0がend_addrだったためFSR0を0x20にする
+    output += "\tCLRF FSR0H\n"
+    output += "\tMOVLW 0x20\n"
+    output += "\tMOVWF FSR0L\n"
+    output += "\tRETURN\n"
+    self.__output += output
+
   def generate( self,
                 led_matrix : LEDMatrix, 
                 is_row_direction_slide = None,
@@ -109,17 +187,22 @@ class PICCodeGenerator:
       return
     # PIC16F1938は960byte書き込むことができる
     if is_row_direction_slide != None or is_column_direction_slide != None:
-      if len(mat) * len(mat[0]) > 960:
+      if len(mat) * len(mat[0]) > 960*8:
         return
     else:
-      # 8*8*n < 960よりn<=15
-      if len(mat[0]) > 15:
+      # 8*8*n < 960*8
+      if 8*8*len(mat[0]) > 960*8:
+        print(len(mat[0]))
         return
     
     self.__output = ""
-    self.__generateConfig()
+    self.__generateConfig(led_matrix, is_row_direction_slide, 
+                          is_column_direction_slide, is_no_slide)
     self.__generateMatrixData(led_matrix, is_row_direction_slide, 
                               is_column_direction_slide, is_no_slide)
+    self.__generateInitialize()
+    self.__generateLoadData(led_matrix, is_row_direction_slide, 
+                            is_column_direction_slide, is_no_slide)
 
   def getHardwareInformation(is_suehiro = None, is_saito = None):
     if is_suehiro != None:
@@ -148,6 +231,7 @@ if __name__ == '__main__':
   m = led.get()
   print(len(m), len(m[0]))
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
-  pic = PICCodeGenerator(hw_info, 100)
+  pic = PICCodeGenerator(hw_info, 10)
   pic.generate(led, is_row_direction_slide=True)
+  # pic.generate(led, is_no_slide=True)
   print(pic.getOutput())

@@ -34,11 +34,11 @@ class PICCodeGenerator_Delay:
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[2]) + "'\n"
 		result += "\tMOVWF " + self.__variable_name + "1\n"
-		result += self.__label_name + "1\n"
+		result += self.__label_name + "0\n"
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
-		result += "\tDECFSZ " + self.__variable_name + "1, F\n"
-		result += "\tGOTO " + self.__label_name + "1\n"
+		result += "\tDECFSZ " + self.__variable_name + "0, F\n"
+		result += "\tGOTO " + self.__label_name + "0\n"
 		result += "\tRETURN"
 		return result
 	def __delayTwoLoop(self, delay_cycle : int, subroutine_name : str):
@@ -78,18 +78,18 @@ class PICCodeGenerator_Delay:
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[3]) + "'\n"
 		result += "\tMOVWF " + self.__variable_name + "1\n"
-		result += self.__label_name + "1\n"
+		result += self.__label_name + "0\n"
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[4]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "2\n"
-		result += self.__label_name + "2\n"
+		result += "\tMOVWF " + self.__variable_name + "1\n"
+		result += self.__label_name + "1\n"
 		for i in range(tmp[2]):
 			result += "\tNOP\n"
-		result += "\tDECFSZ " + self.__variable_name + "2, F\n"
-		result += "\tGOTO " + self.__label_name + "2\n"
 		result += "\tDECFSZ " + self.__variable_name + "1, F\n"
 		result += "\tGOTO " + self.__label_name + "1\n"
+		result += "\tDECFSZ " + self.__variable_name + "0, F\n"
+		result += "\tGOTO " + self.__label_name + "0\n"
 		result += "\tRETURN"
 		return result
 	def __delayThreeLoop(self, delay_cycle : int, subroutine_name : str):
@@ -138,26 +138,26 @@ class PICCodeGenerator_Delay:
 		for i in range(tmp[0]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[4]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "1\n"
-		result += self.__label_name + "1\n"
+		result += "\tMOVWF " + self.__variable_name + "0\n"
+		result += self.__label_name + "0\n"
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[5]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "1\n"
-		result += self.__label_name + "2\n"
+		result += "\tMOVWF " + self.__variable_name + "0\n"
+		result += self.__label_name + "1\n"
 		for i in range(tmp[2]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[6]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "3\n"
-		result += self.__label_name + "3\n"
+		result += "\tMOVWF " + self.__variable_name + "2\n"
+		result += self.__label_name + "2\n"
 		for i in range(tmp[3]):
 			result += "\tNOP\n"
-		result += "\tDECFSZ " + self.__variable_name + "3, F\n"
-		result += "\tGOTO " + self.__label_name + "3\n"
 		result += "\tDECFSZ " + self.__variable_name + "2, F\n"
 		result += "\tGOTO " + self.__label_name + "2\n"
 		result += "\tDECFSZ " + self.__variable_name + "1, F\n"
 		result += "\tGOTO " + self.__label_name + "1\n"
+		result += "\tDECFSZ " + self.__variable_name + "0, F\n"
+		result += "\tGOTO " + self.__label_name + "0\n"
 		result += "\tRETURN"
 		return result
 	def generateDelay(self, delay : int, delay_unit : str, subroutine_name : str):
