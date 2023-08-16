@@ -1,4 +1,5 @@
 import copy
+from util import *
 
 class LEDMatrix:
 	def __init__(self, mat = None, row_size = None, column_size = None):

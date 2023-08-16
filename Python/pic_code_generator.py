@@ -43,9 +43,9 @@ class PICCodeGenerator:
     self.__output += "__CONFIG\t_CONFIG1, _FOSC_INTOSC & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_OFF & _CLKOUTEN_OFF & _IESO_OFF & _FCMEN_OFF\n"
     self.__output += "__CONFIG\t_CONFIG2, _WRT_OFF & _VCAPEN_OFF & _PLLEN_OFF & _STVREN_OFF & _BORV_LO & _LVP_ON\n"
     for i in range(8):
-      self.__output += "MATRIX" + str(i) + "\tEQU " + str(hex(112 + i) + "\n")
+      self.__output += "MATRIX" + str(i) + "\tEQU\t" + str(hex(112 + i) + "\n")
     for i in range(3):
-      self.__output += "CNT" + str(i) + "\tEQU" + str(hex(120 + i) + "\n")
+      self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
   def __generateMatrixData( self,
                             led_matrix : LEDMatrix, 
                             is_row_direction_slide = None,
@@ -93,7 +93,29 @@ class PICCodeGenerator:
                 is_row_direction_slide = None,
                 is_column_direction_slide = None,
                 is_no_slide = None):
-    # TODO 最初に引数チェックを必ず行う
+    mat = led_matrix.get()
+    if len(mat) % 8 != 0 or len(mat[0]) % 8 != 0:
+      print("led matrix error")
+      return
+    flag = 0
+    if is_row_direction_slide != None:
+      flag += 1
+    if is_column_direction_slide != None:
+      flag += 1
+    if is_no_slide != None:
+      flag += 1
+    if flag != 1:
+      print("argument error")
+      return
+    # PIC16F1938は960byte書き込むことができる
+    if is_row_direction_slide != None or is_column_direction_slide != None:
+      if len(mat) * len(mat[0]) > 960:
+        return
+    else:
+      # 8*8*n < 960よりn<=15
+      if len(mat[0]) > 15:
+        return
+    
     self.__output = ""
     self.__generateConfig()
     self.__generateMatrixData(led_matrix, is_row_direction_slide, 
@@ -107,3 +129,25 @@ class PICCodeGenerator:
                               "PORTA",
                               [0,6,1,3,5,2,7,4])
       return h
+  def getOutput(self):
+    return self.__output
+
+if __name__ == '__main__':
+  from font_converter_row_direction import *
+  from font_loader import *
+  from util import *
+  f = FontLoader('./misaki_gothic_2nd.bdf')
+  d = f.getDictionary()
+  row_converter = FontConverter_RowDirection(d)
+  # a = row_converter.convert('  WELCOME TMCIT')
+  s = '  産技高専へようこそ！'
+  s_len = getStringLendth(s)
+  led = LEDMatrix(mat=row_converter.convert(s))
+  # led.print()
+  # print(led.get())
+  m = led.get()
+  print(len(m), len(m[0]))
+  hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
+  pic = PICCodeGenerator(hw_info, 100)
+  pic.generate(led, is_row_direction_slide=True)
+  print(pic.getOutput())

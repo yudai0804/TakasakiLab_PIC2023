@@ -1,4 +1,4 @@
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  1
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0007   1008           00033         BCF     BSR, BSR0
                       00034         ;PORTBとPORTCの出力を0にする
 0008   3000           00035         MOVLW   B'00000000'
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  2
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -81,10 +81,11 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00051         ;7行目 01111111
                       00052         ;8行目 11101111
 0010   3000           00053         MOVLW   B'00000000'
-0011   008C           00054         MOVWF   PORTA
+                      00054 ;       MOVLW   B'11101111'
+0011   008C           00055         MOVWF   PORTA
 Warning[205]: Found directive in column 1. (END)
-0984 3CFF             00055 END
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  3
+0984 3CFF             00056 END
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  3
 
 
 SYMBOL TABLE
@@ -143,7 +144,7 @@ BRG16                             00000003
 BRGH                              00000002
 BSR                               00000008
 BSR0                              00000000
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  4
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  4
 
 
 SYMBOL TABLE
@@ -202,7 +203,7 @@ CCP1AS1                           00000005
 CCP1AS2                           00000006
 CCP1ASE                           00000007
 CCP1CON                           00000293
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  5
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  5
 
 
 SYMBOL TABLE
@@ -261,7 +262,7 @@ CCPR2                             00000298
 CCPR2H                            00000299
 CCPR2L                            00000298
 CCPR3                             00000311
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  6
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  6
 
 
 SYMBOL TABLE
@@ -320,7 +321,7 @@ DACR1                             00000001
 DACR2                             00000002
 DACR3                             00000003
 DACR4                             00000004
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  7
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  7
 
 
 SYMBOL TABLE
@@ -379,7 +380,7 @@ GO_NOT_DONE                       00000001
 HFIOFL                            00000003
 HFIOFR                            00000004
 HFIOFS                            00000000
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  8
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  8
 
 
 SYMBOL TABLE
@@ -438,7 +439,7 @@ LATB0                             00000000
 LATB1                             00000001
 LATB2                             00000002
 LATB3                             00000003
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE  9
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE  9
 
 
 SYMBOL TABLE
@@ -497,7 +498,7 @@ LRLAP1                            00000007
 LRLAT0                            00000000
 LRLAT1                            00000001
 LRLAT2                            00000002
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 10
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 10
 
 
 SYMBOL TABLE
@@ -556,7 +557,7 @@ P2DC6                             00000006
 P2M0                              00000006
 P2M1                              00000007
 P2RSEN                            00000007
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 11
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 11
 
 
 SYMBOL TABLE
@@ -615,7 +616,7 @@ PSTR3CON                          00000316
 PWM1CON                           00000294
 PWM2CON                           0000029B
 PWM3CON                           00000314
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 12
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 12
 
 
 SYMBOL TABLE
@@ -674,7 +675,7 @@ SE13                              00000005
 SE14                              00000006
 SE15                              00000007
 SE2                               00000002
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 13
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 13
 
 
 SYMBOL TABLE
@@ -733,7 +734,7 @@ SEG4COM2                          00000004
 SEG4COM3                          00000004
 SEG5COM0                          00000005
 SEG5COM1                          00000005
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 14
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 14
 
 
 SYMBOL TABLE
@@ -792,7 +793,7 @@ SRSPE                             00000007
 SSPADD                            00000212
 SSPBUF                            00000211
 SSPCON                            00000215
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 15
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 15
 
 
 SYMBOL TABLE
@@ -851,7 +852,7 @@ T1GSPM                            00000004
 T1GSS0                            00000000
 T1GSS1                            00000001
 T1GTM                             00000005
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 16
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 16
 
 
 SYMBOL TABLE
@@ -910,7 +911,7 @@ TMR6                              0000041C
 TMR6IE                            00000003
 TMR6IF                            00000003
 TMR6ON                            00000002
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 17
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 17
 
 
 SYMBOL TABLE
@@ -969,7 +970,7 @@ VLCD2PE                           00000002
 VLCD3PE                           00000003
 W                                 00000000
 WA                                00000004
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 18
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 18
 
 
 SYMBOL TABLE
@@ -1028,7 +1029,7 @@ _FOSC_ECM                         00003FFE
 _FOSC_EXTRC                       00003FFB
 _FOSC_HS                          00003FFA
 _FOSC_INTOSC                      00003FFC
-MPASM 5.77                          MAIN.ASM   8-9-2023  15:54:23         PAGE 19
+MPASM 5.77                          MAIN.ASM   8-13-2023  21:44:08         PAGE 19
 
 
 SYMBOL TABLE
