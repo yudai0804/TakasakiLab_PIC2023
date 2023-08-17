@@ -119,7 +119,7 @@ class PICCodeGenerator:
     self.__data_size = len(byte)
   def __generateInitialize(self):
     output = ""
-    output += "ORG\t0x0000\n"
+    output += "ORG 0x0000\n"
     # バンク1に切り替え
     output += "\tBSF BSR, BSR0\n"
     # OSCCONレジスタを捜査して，周期を4MHzにする
@@ -317,7 +317,8 @@ if __name__ == '__main__':
     tmp = 0
     for j in range(8):
       tmp += m[7-j][i] << j
-    print(str(i) + "MOVLW B'{:08b}'".format(tmp))
+    print("MOVLW B'{:08b}'".format(tmp))
+    print("MOVWF MATRIX" + str(i))
   # print(led.get())
   # led.print()
   # print(led.get())
