@@ -315,6 +315,7 @@ if __name__ == '__main__':
   from font_converter_row_direction import *
   from font_loader import *
   from util import *
+  import os
   f = FontLoader('./misaki_gothic_2nd.bdf')
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
@@ -329,4 +330,8 @@ if __name__ == '__main__':
   pic = PICCodeGenerator(hw_info, 10)
   pic.generate(led, is_row_direction_slide=True)
   # pic.generate(led, is_no_slide=True)
+  os.makedirs("tmp", exist_ok=True)
+  with open("tmp/test.asm", mode="w") as f:
+    f.write(pic.getOutput())
+
   print(pic.getOutput())
