@@ -69,6 +69,21 @@ class LEDMatrix:
 				new_m[j][len(self.__mat) - i - 1] = self.__mat[i][j]
 		self.__mat = new_m
 
+	def rotate(self, angle):
+		"""
+		angleは0,90,180,270のどれか
+		"""
+		if angle != 0 and angle != 90 and angle != 180 and angle != 270:
+			print("angle error")
+			return
+		elif angle == 90:
+			self.rotate90()
+		elif angle == 180:
+			self.rotate180()
+		elif angle == 270:
+			self.rotate270()
+		# angle==0のときは何もしない
+
 	def verticalReading(self, char_size = 8):
 		"""横読みを縦読みに変換する"""
 		# 大きさが利用可能かを確認
@@ -136,6 +151,22 @@ class LEDMatrix:
 		tmp.rotate270()
 		return tmp.get()
 
+	def getRotate(self, angle):
+		"""
+		angleは0,90,180,270のどれか
+		"""
+		if angle != 0 and angle != 90 and angle != 180 and angle != 270:
+			print("angle error")
+			return
+		elif angle == 0:
+			return self.get()
+		elif angle == 90:
+			return self.getRotate90()
+		elif angle == 180:
+			return self.getRotate180()
+		elif angle == 270:
+			return self.getRotate270()
+
 	def getVerticalReading(self, char_size = 8):
 		"""横読みを縦読みに変換する"""
 		tmp = copy.deepcopy(self)
@@ -168,8 +199,7 @@ def convertMat_BitToByte(mat):
 	m = [0] * 8
 	for i in range(len(mat)):
 		for j in range(len(mat[0])):
-			if mat[i][j] == 1:
-				m[i] += 1 << (7 - j)
+			m[i] += mat[i][j] << (7 - j)
 	return m
 
 if __name__ == '__main__':
