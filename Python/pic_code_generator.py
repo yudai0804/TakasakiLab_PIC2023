@@ -297,6 +297,8 @@ class PICCodeGenerator:
                             is_column_direction_slide, is_no_slide)
     self.__generateLightLEDMatrix(led_matrix, is_row_direction_slide, 
                                   is_column_direction_slide, is_no_slide)
+    # 末尾にENDを追加
+    self.__output += "END\n"
 
   def getHardwareInformation(is_suehiro = None, is_saito = None):
     if is_suehiro != None:

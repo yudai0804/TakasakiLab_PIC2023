@@ -39,7 +39,7 @@ class PICCodeGenerator_Delay:
 			result += "\tNOP\n"
 		result += "\tDECFSZ " + self.__variable_name + "0, F\n"
 		result += "\tGOTO " + self.__label_name + "0\n"
-		result += "\tRETURN"
+		result += "\tRETURN\n"
 		return result
 	def __delayTwoLoop(self, delay_cycle : int, subroutine_name : str):
 		# 最適なNOPと繰り返し回数を計算
@@ -90,7 +90,7 @@ class PICCodeGenerator_Delay:
 		result += "\tGOTO " + self.__label_name + "1\n"
 		result += "\tDECFSZ " + self.__variable_name + "0, F\n"
 		result += "\tGOTO " + self.__label_name + "0\n"
-		result += "\tRETURN"
+		result += "\tRETURN\n"
 		return result
 	def __delayThreeLoop(self, delay_cycle : int, subroutine_name : str):
 		# 最適なNOPと繰り返し回数を計算
@@ -158,7 +158,7 @@ class PICCodeGenerator_Delay:
 		result += "\tGOTO " + self.__label_name + "1\n"
 		result += "\tDECFSZ " + self.__variable_name + "0, F\n"
 		result += "\tGOTO " + self.__label_name + "0\n"
-		result += "\tRETURN"
+		result += "\tRETURN\n"
 		return result
 	def generateDelay(self, delay : int, delay_unit : str, subroutine_name : str):
 		if delay <= 0:
