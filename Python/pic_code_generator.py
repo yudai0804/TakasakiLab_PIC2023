@@ -198,14 +198,14 @@ class PICCodeGenerator:
             output += "\tMOVLW " + str(hex(self.__hardware.row_pin[i])) + "\n"
             output += "\tMOVWF " + self.__hardware.row_port + "\n"
           output += "\tCALL LED_DELAY\n"
-        # FSR1を0x70に戻す
-        output += "\tMOVLW 0x70\n"
-        output += "\tMOVWF FSR1L\n"
-        output += "\tRETURN\n"
     elif self.__hardware.angle == 180:
       print("未実装")
     elif self.__hardware.angle == 270:
       print("未実装")
+    # FSR1を0x70に戻す
+    output += "\tMOVLW 0x70\n"
+    output += "\tMOVWF FSR1L\n"
+    output += "\tRETURN\n"
     delay = PICCodeGenerator_Delay(self.__one_cycle_ns)
     delay_str = delay.generateDelay(self.__led_delay_ms, "ms", "LED_DELAY")
     if delay_str == "":
