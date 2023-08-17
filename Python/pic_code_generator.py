@@ -143,8 +143,8 @@ class PICCodeGenerator:
     # PORTを出力にする
     tris_col = self.__hardware.column_port
     tris_row = self.__hardware.row_port
-    tris_col.replace("PORT", "")
-    tris_row.replace("PORT", "")
+    tris_col = tris_col.replace("PORT", "")
+    tris_row = tris_row.replace("PORT", "")
     output += "\tCLRF TRIS" + tris_col + "\n"
     output += "\tCLRF TRIS" + tris_row + "\n"
 
@@ -203,7 +203,7 @@ class PICCodeGenerator:
         output += "\tMOVWF MATRIX" + str(i) + "\n"
         output += "\tADDFSR FSR0, 0x01\n"
     # end_addrと一致していた場合はFSR0を0x20に戻す
-    end_addr_h = self.__end_addr // 0xff
+    end_addr_h = self.__end_addr // 256
     end_addr_l = self.__end_addr & 0xff
     output += "\tMOVLW " + str(hex(end_addr_h)) + "\n"
     output += "\tSUBWF FSR0H, W\n"
