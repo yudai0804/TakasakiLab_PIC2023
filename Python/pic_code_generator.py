@@ -60,6 +60,8 @@ class PICCodeGenerator:
     for i in range(3):
       self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
     self.__output += "LOOP_CNT\tEQU\t0x7b\n"
+    self.__output += "SIZE_H\tEQU\t0x7c\n"
+    self.__output += "SIZE_L\tEQU\t0x7d\n"
   def __generateMatrixData( self,
                             led_matrix : LEDMatrix, 
                             is_row_direction_slide = None,
@@ -77,40 +79,48 @@ class PICCodeGenerator:
         for i in range(len(mat[0]) // 8):
           split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
           split_led = LEDMatrix(mat = split_bit)
-          bit = split_led.getRotate(self.__hardware.angle)
+          # bit = split_led.getRotate(self.__hardware.angle)
           for i in range(8):
             tmp_byte = 0
             for j in range(8):
-              if bit[i][j] == 1:
-                tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
+              tmp_byte += split_bit[7-j][i] << j
             byte.append(tmp_byte)
       elif is_column_direction_slide != None:
-        for i in range(len(mat) // 8):
-          split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
-          split_led = LEDMatrix(mat = split_bit)
-          bit = split_led.getRotate(self.__hardware.angle)
-          for i in range(8):
-            tmp_byte = 0
-            for j in range(8):
-              tmp_byte += bit[i][j] << self.__hardware.row_pin[j]
-            byte.append(tmp_byte)
+        print("実装中")
+        # for i in range(len(mat) // 8):
+        #   split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
+        #   split_led = LEDMatrix(mat = split_bit)
+        #   bit = split_led.getRotate(self.__hardware.angle)
+        #   for i in range(8):
+        #     tmp_byte = 0
+        #     for j in range(8):
+        #       tmp_byte += bit[i][j] << self.__hardware.row_pin[j]
+        #     byte.append(tmp_byte)
       elif is_no_slide != None:
-        for i in range(len(mat[0])):
-          split_bit = led_matrix.getSplitedMatrix(column_offset=i)
-          split_led = LEDMatrix(mat = split_bit)
-          bit = split_led.getRotate(self.__hardware.angle)
-          for i in range(8):
-            tmp_byte = 0
-            for j in range(8):
-              tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
-          byte.append(tmp_byte)
+        print("実装中")
+        # for i in range(len(mat[0])):
+        #   split_bit = led_matrix.getSplitedMatrix(column_offset=i)
+        #   split_led = LEDMatrix(mat = split_bit)
+        #   bit = split_led.getRotate(self.__hardware.angle)
+        #   for i in range(8):
+        #     tmp_byte = 0
+        #     for j in range(8):
+        #       tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
+        #   byte.append(tmp_byte)
     elif self.__hardware.angle == 180:
       print("未実装")
     elif self.__hardware.angle == 270:
       print("未実装")
     # データを書き込む
+    # 理由はわからないが，DTは4バイトずづで区切るとうまくいく
+    # 参考:http://www.picfun.com/pic18/tech18x02.html
     output = "LEDMATRIX_DATA\n\tDT "
     for i in range(len(byte)):
+      if i % 4 == 0 and i != 0:
+        if output[-1] == ",":
+          output = output.rstrip(",")
+          output += "\n"
+          output += "\tDT "
       output += str(hex(byte[i])) + ","
     if output[-1] == ",":
       output = output.rstrip(",")
@@ -146,6 +156,12 @@ class PICCodeGenerator:
     output += "\tCLRF FSR1H\n"
     output += "\tMOVLW 0x70\n"
     output += "\tMOVWF FSR1L\n"
+    # MATRIXの初期値に0を代入
+    for i in range(8):
+      output += "\tCLRF MATRIX" + str(i) + "\n"
+    # SIZEの初期値に0を代入
+    output += "\tCLRF SIZE_H\n"
+    output += "\tCLRF SIZE_L\n"
     # メインループに飛ぶ
     output += "\tGOTO LOOP\n"
     self.__output += output
@@ -187,17 +203,21 @@ class PICCodeGenerator:
         output += "\tMOVIW 0[FSR0]\n"
         output += "\tMOVWF MATRIX" + str(i) + "\n"
         output += "\tADDFSR FSR0, 0x01\n"
-    # end_addrと一致していた場合はFSR0を0x20に戻す
-    output += "\tMOVF FSR0H, W\n"
-    output += "\tSUBLW HIGH LEDMATRIX_DATA\n"
-    output += "\tSUBLW " + str(hex(self.__data_size // 256)) + "\n"
+    # FSR0で読んだデータの大きさがSIZEと等しいかを確認する
+    output += "\tINCF SIZE_L, F\n"
+    output += "\tBTFSC STATUS, Z\n"
+    output += "\tINCF SIZE_H, F\n"
+    output += "\tMOVLW " + str(hex(self.__data_size // 256)) + "\n"
+    output += "\tSUBWF SIZE_H, W\n"
     output += "\tBTFSS STATUS, Z\n"
     output += "\tRETURN\n"
-    output += "\tMOVF FSR0L, W\n"
-    output += "\tSUBLW LOW LEDMATRIX_DATA\n"
-    output += "\tSUBLW " + str(hex(self.__data_size % 256)) + "\n"
+    output += "\tMOVLW " + str(hex(self.__data_size % 256)) + "\n"
+    output += "\tSUBWF SIZE_L, W\n"
     output += "\tBTFSS STATUS, Z\n"
     output += "\tRETURN\n"
+    # SIZEを0にする
+    output += "\tCLRF SIZE_H\n"
+    output += "\tCLRF SIZE_L\n"
     # FSR0がデータの末尾だった場合はFSR0をLEDMATRIX_DATAに合わせる
     output += "\tMOVLW HIGH LEDMATRIX_DATA\n"
     output += "\tMOVWF FSR0H\n"
@@ -218,12 +238,14 @@ class PICCodeGenerator:
       for i in range(8):
         output += "\tMOVIW FSR1++\n"
         if is_column_direction_slide != None:
-          output += "\tMOVWF " + self.__hardware.row_port + "\n"
-          output += "\tMOVLW " + str(hex(self.__hardware.column_pin[i])) + "\n"
-          output += "\tMOVWF " + self.__hardware.column_port + "\n"
+          print("実装中")
+          # output += "\tMOVWF " + self.__hardware.row_port + "\n"
+          # output += "\tMOVLW " + str(hex(self.__hardware.column_pin[i])) + "\n"
+          # output += "\tMOVWF " + self.__hardware.column_port + "\n"
         else:
           output += "\tMOVWF " + self.__hardware.column_port + "\n"
-          output += "\tMOVLW " + str(hex(self.__hardware.row_pin[i])) + "\n"
+
+          output += "\tMOVLW " + str(hex(255 - (1 << self.__hardware.row_pin[i]))) + "\n"
           output += "\tMOVWF " + self.__hardware.row_port + "\n"
         output += "\tCALL LED_DELAY\n"
     elif self.__hardware.angle == 180:
@@ -305,26 +327,13 @@ if __name__ == '__main__':
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
   # a = row_converter.convert('  WELCOME TMCIT')
-  # s = '  産技高専へようこそ！'
-  s = 'あ'
+  # s = '  さんぎこうせんあらかわキャンパスへようこそ'
+  s = '  じょうほうつうしんこうがくコース'
   s_len = getStringLendth(s)
   led = LEDMatrix(mat=row_converter.convert(s))
-  printBitMatrix(led.get())
-  m = led.get()
-  for i in range(8):
-    print(m[i])
-  for i in range(8):
-    tmp = 0
-    for j in range(8):
-      tmp += m[7-j][i] << j
-    print("MOVLW B'{:08b}'".format(tmp))
-    print("MOVWF MATRIX" + str(i))
-  # print(led.get())
-  # led.print()
-  # print(led.get())
   m = led.get()
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
-  pic = PICCodeGenerator(hw_info, 10)
+  pic = PICCodeGenerator(hw_info, 8)
   pic.generate(led, is_row_direction_slide=True)
   # pic.generate(led, is_no_slide=True)
   os.makedirs("tmp", exist_ok=True)

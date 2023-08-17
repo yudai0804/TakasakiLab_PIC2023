@@ -1,11 +1,11 @@
 MPLINK 5.08, LINKER
-Linker Map File - Created Thu Aug 17 22:23:33 2023
+Linker Map File - Created Fri Aug 18 00:41:45 2023
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
-                   .org_0       code   0x000000    program   0x000076
-                   .cinit    romdata   0x00003b    program   0x000004
+                   .org_0       code   0x000000    program   0x0001fc
+                   .cinit    romdata   0x0000fe    program   0x000004
 .config_8007_BUILD/DEFAULT/PRODUCTION/MAIN.O       code   0x008007    program   0x000002
 .config_8008_BUILD/DEFAULT/PRODUCTION/MAIN.O       code   0x008008    program   0x000002
 
@@ -14,28 +14,34 @@ Linker Map File - Created Thu Aug 17 22:23:33 2023
                               Program Memory Usage 
                                Start         End      
                            ---------   ---------      
-                            0x000000    0x00003c      
+                            0x000000    0x0000ff      
                             0x008007    0x008008      
-            63 out of 16647 program addresses used, program memory utilization is 0%
+            258 out of 16647 program addresses used, program memory utilization is 1%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                LEDMATRIX   0x00000b    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
-                LED_DELAY   0x000034    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
-          LED_DELAY_JUMP0   0x000036    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
-                     LOOP   0x000009    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                LEDMATRIX   0x0000cc    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+           LEDMATRIX_DATA   0x000021    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                LED_DELAY   0x0000f7    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+          LED_DELAY_JUMP0   0x0000f9    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                     LOAD   0x0000a9    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                     LOOP   0x00001a    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+               LOOP_JUMP0   0x00001d    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                     LOOP   0x000009    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
-                LEDMATRIX   0x00000b    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
-                LED_DELAY   0x000034    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
-          LED_DELAY_JUMP0   0x000036    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                     LOOP   0x00001a    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+               LOOP_JUMP0   0x00001d    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+           LEDMATRIX_DATA   0x000021    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                     LOAD   0x0000a9    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                LEDMATRIX   0x0000cc    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+                LED_DELAY   0x0000f7    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
+          LED_DELAY_JUMP0   0x0000f9    program     static C:\Users\yudai\Desktop\TakasakiLab_PIC2023\PIC\LEDMatrix_16F1928_New.X\main.asm
 
 
