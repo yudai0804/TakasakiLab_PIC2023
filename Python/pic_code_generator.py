@@ -75,11 +75,10 @@ class PICCodeGenerator:
       print("未実装")
     elif self.__hardware.angle == 90:
       # 条件に応じてbitからbyteに変換する
-      if is_row_direction_slide != None:
+      if is_row_direction_slide != None or is_no_slide != None:
         for i in range(len(mat[0]) // 8):
           split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
           split_led = LEDMatrix(mat = split_bit)
-          # bit = split_led.getRotate(self.__hardware.angle)
           for i in range(8):
             tmp_byte = 0
             for j in range(8):
@@ -96,17 +95,6 @@ class PICCodeGenerator:
         #     for j in range(8):
         #       tmp_byte += bit[i][j] << self.__hardware.row_pin[j]
         #     byte.append(tmp_byte)
-      elif is_no_slide != None:
-        print("実装中")
-        # for i in range(len(mat[0])):
-        #   split_bit = led_matrix.getSplitedMatrix(column_offset=i)
-        #   split_led = LEDMatrix(mat = split_bit)
-        #   bit = split_led.getRotate(self.__hardware.angle)
-        #   for i in range(8):
-        #     tmp_byte = 0
-        #     for j in range(8):
-        #       tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
-        #   byte.append(tmp_byte)
     elif self.__hardware.angle == 180:
       print("未実装")
     elif self.__hardware.angle == 270:
@@ -197,16 +185,21 @@ class PICCodeGenerator:
       output += "\tMOVIW 0[FSR0]\n"
       output += "\tMOVWF MATRIX7\n"
       output += "\tADDFSR FSR0, 0x01\n"
+      # SIZEを更新
+      output += "\tINCF SIZE_L, F\n"
+      output += "\tBTFSC STATUS, Z\n"
+      output += "\tINCF SIZE_H, F\n"
     elif is_no_slide != None:
       # データをFSR0から読む
       for i in range(8):
         output += "\tMOVIW 0[FSR0]\n"
         output += "\tMOVWF MATRIX" + str(i) + "\n"
         output += "\tADDFSR FSR0, 0x01\n"
+        # SIZEを更新
+        output += "\tINCF SIZE_L, F\n"
+        output += "\tBTFSC STATUS, Z\n"
+        output += "\tINCF SIZE_H, F\n"
     # FSR0で読んだデータの大きさがSIZEと等しいかを確認する
-    output += "\tINCF SIZE_L, F\n"
-    output += "\tBTFSC STATUS, Z\n"
-    output += "\tINCF SIZE_H, F\n"
     output += "\tMOVLW " + str(hex(self.__data_size // 256)) + "\n"
     output += "\tSUBWF SIZE_H, W\n"
     output += "\tBTFSS STATUS, Z\n"
@@ -283,14 +276,6 @@ class PICCodeGenerator:
     if flag != 1:
       print("argument error")
       return
-    # PIC16F1938は960byte書き込むことができる
-    if is_row_direction_slide != None or is_column_direction_slide != None:
-      if len(mat) * len(mat[0]) > 960*8:
-        return
-    else:
-      # 8*8*n < 960*8
-      if 8*8*len(mat[0]) > 960*8:
-        return
     
     self.__output = ""
     self.__generateConfig(led_matrix, is_row_direction_slide, 
@@ -333,9 +318,10 @@ if __name__ == '__main__':
   led = LEDMatrix(mat=row_converter.convert(s))
   m = led.get()
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
-  pic = PICCodeGenerator(hw_info, 8)
-  pic.generate(led, is_row_direction_slide=True)
-  # pic.generate(led, is_no_slide=True)
+  # pic = PICCodeGenerator(hw_info, 8)
+  # pic.generate(led, is_row_direction_slide=True)
+  pic = PICCodeGenerator(hw_info, 1)
+  pic.generate(led, is_no_slide=True)
   os.makedirs("tmp", exist_ok=True)
   with open("tmp/test.asm", mode="w") as f:
     f.write(pic.getOutput())
