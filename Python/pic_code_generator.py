@@ -14,7 +14,7 @@ class HardwareInformation:
     Parameters
     ----------
     angle : LEDマトリクスの角度(0,90,180,270のどれか)
-            rowとcolumnはangle度回転した後のもの
+            rowとcolumnはLEDMatrixのデータシート準拠
     row_port : rowのポート名
     row_pin : 0行目から7行目のピン名
     column_port : columnのポート名
@@ -34,7 +34,7 @@ class PICCodeGenerator:
     self.__hardware = hardware
     self.__animation_hz = animation_hz
     self.__one_cycle_ns = 1000
-    self.__led_delay_ms = 1
+    self.__led_delay_us = 1250
     self.__output = ""
     # 最後の要素の次のアドレス
     self.__end_addr = 0
@@ -73,25 +73,44 @@ class PICCodeGenerator:
     byte = []
     output = ""
     org_cnt = 0
-    # 条件に応じてbitからbyteに変換する
-    if is_row_direction_slide != None:
-      for i in range(len(mat[0]) // 8):
-        split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
-        tmp_byte = convertMat_BitToByte(split_bit)
-        for j in range(8):
-          byte.append(tmp_byte[j])
-    elif is_column_direction_slide != None:
-      for i in range(len(mat) // 8):
-        split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
-        tmp_byte = convertMat_BitToByte(split_bit)
-        for j in range(8):
-          byte.append(tmp_byte[j])
-    elif is_no_slide != None:
-      for i in range(len(mat[0])):
-        split_bit = led_matrix.getSplitedMatrix(column_offset=i)
-        tmp_byte = convertMat_BitToByte(split_bit)
-        for j in range(8):
-          byte.append(tmp_byte[j])
+    if self.__hardware.angle == 0:
+      print("未実装")
+    elif self.__hardware.angle == 90:
+      # 条件に応じてbitからbyteに変換する
+      if is_row_direction_slide != None:
+        for i in range(len(mat[0]) // 8):
+          split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
+          split_led = LEDMatrix(mat = split_bit)
+          bit = split_led.getRotate(self.__hardware.angle)
+          for i in range(8):
+            tmp_byte = 0
+            for j in range(8):
+              tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
+            byte.append(tmp_byte)
+      elif is_column_direction_slide != None:
+        for i in range(len(mat) // 8):
+          split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
+          split_led = LEDMatrix(mat = split_bit)
+          bit = split_led.getRotate(self.__hardware.angle)
+          for i in range(8):
+            tmp_byte = 0
+            for j in range(8):
+              tmp_byte += bit[i][j] << self.__hardware.row_pin[j]
+            byte.append(tmp_byte)
+      elif is_no_slide != None:
+        for i in range(len(mat[0])):
+          split_bit = led_matrix.getSplitedMatrix(column_offset=i)
+          split_led = LEDMatrix(mat = split_bit)
+          bit = split_led.getRotate(self.__hardware.angle)
+          for i in range(8):
+            tmp_byte = 0
+            for j in range(8):
+              tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
+          byte.append(tmp_byte)
+    elif self.__hardware.angle == 180:
+      print("未実装")
+    elif self.__hardware.angle == 270:
+      print("未実装")
     # データを書き込む
     output = ""
     for i in range(len(byte)):
@@ -207,7 +226,7 @@ class PICCodeGenerator:
     output += "\tMOVWF FSR1L\n"
     output += "\tRETURN\n"
     delay = PICCodeGenerator_Delay(self.__one_cycle_ns)
-    delay_str = delay.generateDelay(self.__led_delay_ms, "ms", "LED_DELAY")
+    delay_str = delay.generateDelay(self.__led_delay_us, "us", "LED_DELAY")
     if delay_str == "":
       print("delay generate error")
       return
