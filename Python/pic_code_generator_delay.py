@@ -33,7 +33,7 @@ class PICCodeGenerator_Delay:
 		for i in range(tmp[0]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[2]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "1\n"
+		result += "\tMOVWF " + self.__variable_name + "0\n"
 		result += self.__label_name + "0\n"
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
@@ -77,7 +77,7 @@ class PICCodeGenerator_Delay:
 		for i in range(tmp[0]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[3]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "1\n"
+		result += "\tMOVWF " + self.__variable_name + "0\n"
 		result += self.__label_name + "0\n"
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
@@ -143,7 +143,7 @@ class PICCodeGenerator_Delay:
 		for i in range(tmp[1]):
 			result += "\tNOP\n"
 		result += "\tMOVLW D'" + str(tmp[5]) + "'\n"
-		result += "\tMOVWF " + self.__variable_name + "0\n"
+		result += "\tMOVWF " + self.__variable_name + "1\n"
 		result += self.__label_name + "1\n"
 		for i in range(tmp[2]):
 			result += "\tNOP\n"
