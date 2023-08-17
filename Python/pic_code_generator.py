@@ -81,7 +81,8 @@ class PICCodeGenerator:
           for i in range(8):
             tmp_byte = 0
             for j in range(8):
-              tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
+              if bit[i][j] == 1:
+                tmp_byte += bit[j][i] << self.__hardware.column_pin[j]
             byte.append(tmp_byte)
       elif is_column_direction_slide != None:
         for i in range(len(mat) // 8):
@@ -304,9 +305,20 @@ if __name__ == '__main__':
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
   # a = row_converter.convert('  WELCOME TMCIT')
-  s = '  産技高専へようこそ！'
+  # s = '  産技高専へようこそ！'
+  s = 'あ'
   s_len = getStringLendth(s)
   led = LEDMatrix(mat=row_converter.convert(s))
+  printBitMatrix(led.get())
+  m = led.get()
+  for i in range(8):
+    print(m[i])
+  for i in range(8):
+    tmp = 0
+    for j in range(8):
+      tmp += m[7-j][i] << j
+    print(str(i) + "MOVLW B'{:08b}'".format(tmp))
+  # print(led.get())
   # led.print()
   # print(led.get())
   m = led.get()
@@ -318,4 +330,4 @@ if __name__ == '__main__':
   with open("tmp/test.asm", mode="w") as f:
     f.write(pic.getOutput())
 
-  print(pic.getOutput())
+  # print(pic.getOutput())
