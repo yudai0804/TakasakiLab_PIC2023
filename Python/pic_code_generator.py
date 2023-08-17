@@ -42,8 +42,8 @@ class PICCodeGenerator:
       self.__one_flame_us -= self.__one_flame_us % (8 * self.__led_delay_us)
     if self.__one_flame_us // (8 * self.__led_delay_us) > 255:
       print("error")
-    # 最後の要素の次のアドレス
-    self.__end_addr = 0
+    # データの大きさ
+    self.__data_size = 0
 
   def __generateConfig( self,
                         led_matrix : LEDMatrix, 
@@ -60,17 +60,6 @@ class PICCodeGenerator:
     for i in range(3):
       self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
     self.__output += "LOOP_CNT\tEQU\t0x7b\n"
-    # 書き込んだデータの末尾
-    byte_size = 0
-    mat = led_matrix.get()
-    if is_row_direction_slide != None:
-      byte_size = len(mat[0])
-    elif is_column_direction_slide != None:
-      byte_size = len(mat)
-    elif is_no_slide != None:
-      byte_size = len(mat[0]) * 8
-    # 最後の要素の次のアドレス
-    self.__end_addr = (byte_size // 80) * 128 + (byte_size % 80) + 32
   def __generateMatrixData( self,
                             led_matrix : LEDMatrix, 
                             is_row_direction_slide = None,
@@ -119,19 +108,14 @@ class PICCodeGenerator:
     elif self.__hardware.angle == 270:
       print("未実装")
     # データを書き込む
-    output = ""
+    output = "LEDMATRIX_DATA\n\tDT "
     for i in range(len(byte)):
-      if org_cnt % 80 == 0:
-        if org_cnt != 0:
-          output = output.rstrip(",")
-        output += "\nORG\t" + str(hex((org_cnt // 80) * 128 + 32) + "\nDE\t")
-      output += str(hex(byte[org_cnt])) + ","
-      org_cnt += 1
-    # 末尾の不要な文字を削除
+      output += str(hex(byte[i])) + ","
     if output[-1] == ",":
       output = output.rstrip(",")
       output += "\n"
     self.__output += output
+    self.__data_size = len(byte)
   def __generateInitialize(self):
     output = ""
     output += "ORG\t0x0000\n"
@@ -147,15 +131,15 @@ class PICCodeGenerator:
     tris_row = tris_row.replace("PORT", "")
     output += "\tCLRF TRIS" + tris_col + "\n"
     output += "\tCLRF TRIS" + tris_row + "\n"
-
     # バンク0に切り替え
     output += "\tBCF BSR, BSR0\n"
     # 出力を0にする
     output += "\tCLRF " + self.__hardware.column_port + "\n"
     output += "\tCLRF " + self.__hardware.row_port + "\n"
-    # FSR0レジスタを0x020番地に合わせる
-    output += "\tCLRF FSR0H\n"
-    output += "\tMOVLW 0x20\n"
+    # FSR0レジスタをLEDMATRIX_DATA番地に合わせる
+    output += "\tMOVLW HIGH LEDMATRIX_DATA\n"
+    output += "\tMOVWF FSR0H\n"
+    output += "\tMOVLW LOW LEDMATRIX_DATA\n"
     output += "\tMOVWF FSR0L\n"
     # FSR1レジスタを0x70番地に合わせる
     output += "\tCLRF FSR1H\n"
@@ -203,19 +187,20 @@ class PICCodeGenerator:
         output += "\tMOVWF MATRIX" + str(i) + "\n"
         output += "\tADDFSR FSR0, 0x01\n"
     # end_addrと一致していた場合はFSR0を0x20に戻す
-    end_addr_h = self.__end_addr // 256
-    end_addr_l = self.__end_addr & 0xff
-    output += "\tMOVLW " + str(hex(end_addr_h)) + "\n"
-    output += "\tSUBWF FSR0H, W\n"
+    output += "\tMOVF FSR0H, W\n"
+    output += "\tSUBLW HIGH LEDMATRIX_DATA\n"
+    output += "\tSUBLW " + str(hex(self.__data_size // 256)) + "\n"
     output += "\tBTFSS STATUS, Z\n"
     output += "\tRETURN\n"
-    output += "\tMOVLW " + str(hex(end_addr_l)) + "\n"
-    output += "\tSUBWF FSR0L, W\n"
+    output += "\tMOVF FSR0L, W\n"
+    output += "\tSUBLW LOW LEDMATRIX_DATA\n"
+    output += "\tSUBLW " + str(hex(self.__data_size % 256)) + "\n"
     output += "\tBTFSS STATUS, Z\n"
     output += "\tRETURN\n"
-    # FSR0がend_addrだったためFSR0を0x20にする
-    output += "\tCLRF FSR0H\n"
-    output += "\tMOVLW 0x20\n"
+    # FSR0がデータの末尾だった場合はFSR0をLEDMATRIX_DATAに合わせる
+    output += "\tMOVLW HIGH LEDMATRIX_DATA\n"
+    output += "\tMOVWF FSR0H\n"
+    output += "\tMOVLW LOW LEDMATRIX_DATA\n"
     output += "\tMOVWF FSR0L\n"
     output += "\tRETURN\n"
     self.__output += output
@@ -229,18 +214,17 @@ class PICCodeGenerator:
     if self.__hardware.angle == 0:
       print("未実装")
     elif self.__hardware.angle == 90:
-      if is_row_direction_slide or is_no_slide:
-        for i in range(8):
-          output += "\tMOVIW FSR1++\n"
-          if is_column_direction_slide != None:
-            output += "\tMOVWF " + self.__hardware.row_port + "\n"
-            output += "\tMOVLW " + str(hex(self.__hardware.column_pin[i])) + "\n"
-            output += "\tMOVWF " + self.__hardware.column_port + "\n"
-          else:
-            output += "\tMOVWF " + self.__hardware.column_port + "\n"
-            output += "\tMOVLW " + str(hex(self.__hardware.row_pin[i])) + "\n"
-            output += "\tMOVWF " + self.__hardware.row_port + "\n"
-          output += "\tCALL LED_DELAY\n"
+      for i in range(8):
+        output += "\tMOVIW FSR1++\n"
+        if is_column_direction_slide != None:
+          output += "\tMOVWF " + self.__hardware.row_port + "\n"
+          output += "\tMOVLW " + str(hex(self.__hardware.column_pin[i])) + "\n"
+          output += "\tMOVWF " + self.__hardware.column_port + "\n"
+        else:
+          output += "\tMOVWF " + self.__hardware.column_port + "\n"
+          output += "\tMOVLW " + str(hex(self.__hardware.row_pin[i])) + "\n"
+          output += "\tMOVWF " + self.__hardware.row_port + "\n"
+        output += "\tCALL LED_DELAY\n"
     elif self.__hardware.angle == 180:
       print("未実装")
     elif self.__hardware.angle == 270:
@@ -249,7 +233,7 @@ class PICCodeGenerator:
     output += "\tMOVLW 0x70\n"
     output += "\tMOVWF FSR1L\n"
     output += "\tRETURN\n"
-    delay = PICCodeGenerator_Delay(self.__one_cycle_ns)
+    delay = PICCodeGenerator_Delay(self.__one_cycle_ns, label_name="LED_DELAY_JUMP")
     delay_str = delay.generateDelay(self.__led_delay_us, "us", "LED_DELAY")
     if delay_str == "":
       print("delay generate error")
@@ -288,11 +272,11 @@ class PICCodeGenerator:
     self.__output = ""
     self.__generateConfig(led_matrix, is_row_direction_slide, 
                           is_column_direction_slide, is_no_slide)
-    self.__generateMatrixData(led_matrix, is_row_direction_slide, 
-                              is_column_direction_slide, is_no_slide)
     self.__generateInitialize()
     self.__generateMainLoop(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)
+    self.__generateMatrixData(led_matrix, is_row_direction_slide, 
+                              is_column_direction_slide, is_no_slide)
     self.__generateLoadData(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)
     self.__generateLightLEDMatrix(led_matrix, is_row_direction_slide, 
