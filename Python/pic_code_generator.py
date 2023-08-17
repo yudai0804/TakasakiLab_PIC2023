@@ -32,10 +32,16 @@ class PICCodeGenerator:
   """
   def __init__(self, hardware : HardwareInformation, animation_hz : int):
     self.__hardware = hardware
-    self.__animation_hz = animation_hz
+    self.__one_flame_us = int(1 / animation_hz * 1e6)
     self.__one_cycle_ns = 1000
     self.__led_delay_us = 1250
     self.__output = ""
+    if self.__one_flame_us < 8 * self.__led_delay_us:
+      self.__one_flame_us = int(8 * self.__led_delay_us)
+    if self.__one_flame_us % ( 8 * self.__led_delay_us) != 0:
+      self.__one_flame_us -= self.__one_flame_us % (8 * self.__led_delay_us)
+    if self.__one_flame_us // (8 * self.__led_delay_us) > 255:
+      print("error")
     # 最後の要素の次のアドレス
     self.__end_addr = 0
 
@@ -53,6 +59,7 @@ class PICCodeGenerator:
       self.__output += "MATRIX" + str(i) + "\tEQU\t" + str(hex(112 + i) + "\n")
     for i in range(3):
       self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
+    self.__output += "LOOP_CNT\tEQU\t0x7b\n"
     # 書き込んだデータの末尾
     byte_size = 0
     mat = led_matrix.get()
@@ -157,6 +164,23 @@ class PICCodeGenerator:
     # メインループに飛ぶ
     output += "\tGOTO LOOP\n"
     self.__output += output
+  def __generateMainLoop( self,
+                          led_matrix : LEDMatrix, 
+                          is_row_direction_slide = None,
+                          is_column_direction_slide = None,
+                          is_no_slide = None):
+    output = "LOOP\n"
+    output += "\tCALL LOAD\n"
+    loop_cnt = self.__one_flame_us // (8 * self.__led_delay_us)
+    output += "\tMOVLW D'" + str(loop_cnt) + "'\n"
+    output += "\tMOVWF LOOP_CNT\n"
+    output += "LOOP_JUMP0\n"
+    output += "\tCALL LEDMATRIX\n"
+    output += "\tDECFSZ LOOP_CNT\n"
+    output += "\tGOTO LOOP_JUMP0\n"
+    output += "\tGOTO LOOP\n"
+    self.__output += output
+
   def __generateLoadData( self,
                           led_matrix : LEDMatrix, 
                           is_row_direction_slide = None,
@@ -259,7 +283,6 @@ class PICCodeGenerator:
     else:
       # 8*8*n < 960*8
       if 8*8*len(mat[0]) > 960*8:
-        print(len(mat[0]))
         return
     
     self.__output = ""
@@ -268,6 +291,8 @@ class PICCodeGenerator:
     self.__generateMatrixData(led_matrix, is_row_direction_slide, 
                               is_column_direction_slide, is_no_slide)
     self.__generateInitialize()
+    self.__generateMainLoop(led_matrix, is_row_direction_slide, 
+                            is_column_direction_slide, is_no_slide)
     self.__generateLoadData(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)
     self.__generateLightLEDMatrix(led_matrix, is_row_direction_slide, 
@@ -298,7 +323,6 @@ if __name__ == '__main__':
   # led.print()
   # print(led.get())
   m = led.get()
-  print(len(m), len(m[0]))
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
   pic = PICCodeGenerator(hw_info, 10)
   pic.generate(led, is_row_direction_slide=True)
