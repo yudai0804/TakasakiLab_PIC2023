@@ -34,6 +34,7 @@ class PICCodeGenerator:
     self.__hardware = hardware
     self.__animation_hz = animation_hz
     self.__one_cycle_ns = 1000
+    self.__led_delay_ms = 1
     self.__output = ""
     # 最後の要素の次のアドレス
     self.__end_addr = 0
@@ -113,19 +114,29 @@ class PICCodeGenerator:
     # OSCCONレジスタを捜査して，周期を4MHzにする
     output += "\tMOVLW B'01101000'\n"
     output += "\tMOVWF OSCCON\n"
-    # PORTAを出力にする
-    output += "\tCLRF TRISA\n"
-    # PORTCを出力にする
-    output += "\tCLRF TRISC\n"
+    # PORTを出力にする
+    tris_col = self.__hardware.column_port
+    tris_row = self.__hardware.row_port
+    tris_col.replace("PORT", "")
+    tris_row.replace("PORT", "")
+    output += "\tCLRF TRIS" + tris_col + "\n"
+    output += "\tCLRF TRIS" + tris_row + "\n"
+
     # バンク0に切り替え
     output += "\tBCF BSR, BSR0\n"
-    # PORTAとPORTCの出力を0にする
-    output += "\tCLRF PORTA\n"
-    output += "\tCLRF PORTC\n"
-    # FSRレジスタを0x020番地に合わせる
-    output += "\tMOVWF FSR0H\n"
+    # 出力を0にする
+    output += "\tCLRF " + self.__hardware.column_port + "\n"
+    output += "\tCLRF " + self.__hardware.row_port + "\n"
+    # FSR0レジスタを0x020番地に合わせる
+    output += "\tCLRF FSR0H\n"
     output += "\tMOVLW 0x20\n"
     output += "\tMOVWF FSR0L\n"
+    # FSR1レジスタを0x70番地に合わせる
+    output += "\tCLRF FSR1H\n"
+    output += "\tMOVLW 0x70\n"
+    output += "\tMOVWF FSR1L\n"
+    # メインループに飛ぶ
+    output += "\tGOTO LOOP\n"
     self.__output += output
   def __generateLoadData( self,
                           led_matrix : LEDMatrix, 
@@ -166,6 +177,43 @@ class PICCodeGenerator:
     output += "\tRETURN\n"
     self.__output += output
 
+  def __generateLightLEDMatrix( self,
+                                led_matrix : LEDMatrix, 
+                                is_row_direction_slide = None,
+                                is_column_direction_slide = None,
+                                is_no_slide = None):
+    output = "LEDMATRIX\n"
+    if self.__hardware.angle == 0:
+      print("未実装")
+    elif self.__hardware.angle == 90:
+      if is_row_direction_slide or is_no_slide:
+        for i in range(8):
+          output += "\tMOVIW FSR1++\n"
+          if is_column_direction_slide != None:
+            output += "\tMOVWF " + self.__hardware.row_port + "\n"
+            output += "\tMOVLW " + str(hex(self.__hardware.column_pin[i])) + "\n"
+            output += "\tMOVWF " + self.__hardware.column_port + "\n"
+          else:
+            output += "\tMOVWF " + self.__hardware.column_port + "\n"
+            output += "\tMOVLW " + str(hex(self.__hardware.row_pin[i])) + "\n"
+            output += "\tMOVWF " + self.__hardware.row_port + "\n"
+          output += "\tCALL LED_DELAY\n"
+        # FSR1を0x70に戻す
+        output += "\tMOVLW 0x70\n"
+        output += "\tMOVWF FSR1L\n"
+        output += "\tRETURN\n"
+    elif self.__hardware.angle == 180:
+      print("未実装")
+    elif self.__hardware.angle == 270:
+      print("未実装")
+    delay = PICCodeGenerator_Delay(self.__one_cycle_ns)
+    delay_str = delay.generateDelay(self.__led_delay_ms, "ms", "LED_DELAY")
+    if delay_str == "":
+      print("delay generate error")
+      return
+    self.__output += output
+    self.__output += delay_str
+
   def generate( self,
                 led_matrix : LEDMatrix, 
                 is_row_direction_slide = None,
@@ -203,14 +251,16 @@ class PICCodeGenerator:
     self.__generateInitialize()
     self.__generateLoadData(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)
+    self.__generateLightLEDMatrix(led_matrix, is_row_direction_slide, 
+                                  is_column_direction_slide, is_no_slide)
 
   def getHardwareInformation(is_suehiro = None, is_saito = None):
     if is_suehiro != None:
       h = HardwareInformation(90,
-                              "PORTC",
-                              [7,6,5,4,3,2,1,0],
                               "PORTA",
-                              [0,6,1,3,5,2,7,4])
+                              [0,6,1,3,5,2,7,4],
+                              "PORTC",
+                              [0,1,2,3,4,5,6,7])
       return h
   def getOutput(self):
     return self.__output
