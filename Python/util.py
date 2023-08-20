@@ -13,6 +13,13 @@ def getStringLendth(text):
 	count = count //2 + mod
 	return count
 
+def convertHalfWordToWord(text):
+	"""
+	半角から全角に変換する
+	参考:https://qiita.com/YuukiMiyoshi/items/6ce77bf402a29a99f1bf#%E5%8D%8A%E8%A7%92---%E5%85%A8%E8%A7%92
+	"""
+	return text.translate(str.maketrans({chr(0x0021 + i): chr(0xFF01 + i) for i in range(94)}))
+
 def printBitMatrix(mat):
 	"""ビットで表された行列を表示する"""
 	for i in range(len(mat)):

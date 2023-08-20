@@ -323,7 +323,9 @@ if __name__ == '__main__':
   f = FontLoader('./misaki_gothic_2nd.bdf')
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
-  s = "  さんぎこうせんへようこそ  "
+  # s = "  さんぎこうせんへようこそ  "
+  s = "  ＾・＾123TMCIT  "
+  s = convertHalfWordToWord(s)
   s_len = getStringLendth(s)
   led = LEDMatrix(mat=row_converter.convert(s))
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
