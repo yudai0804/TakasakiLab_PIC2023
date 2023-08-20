@@ -81,19 +81,19 @@ class PICCodeGenerator:
           for j in range(8):
             tmp_byte = 0
             for k in range(8):
-              tmp_byte += split_bit[7 - k][j] << k
+              tmp_byte += split_bit[7 - k][j] << self.__hardware.column_pin[k]
             byte.append(tmp_byte)
       elif is_column_direction_slide != None:
-        print("実装中")
-        # for i in range(len(mat) // 8):
-        #   split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
-        #   split_led = LEDMatrix(mat = split_bit)
-        #   bit = split_led.getRotate(self.__hardware.angle)
-        #   for i in range(8):
-        #     tmp_byte = 0
-        #     for j in range(8):
-        #       tmp_byte += bit[i][j] << self.__hardware.row_pin[j]
-        #     byte.append(tmp_byte)
+        for i in range(len(mat) // 8):
+          split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
+          for j in range(8):
+            tmp_byte = 0
+            for k in range(8):
+              # rowはカソード側のためビットを反転
+              if split_bit[j][k] == 0:
+                tmp_byte += 1 << self.__hardware.row_pin[k]
+              # tmp_byte += ((~split_bit[j][k]) & 1) << self.__hardware.row_pin[k]
+            byte.append(tmp_byte)
     elif self.__hardware.angle == 180:
       print("未実装")
     elif self.__hardware.angle == 270:
@@ -114,7 +114,11 @@ class PICCodeGenerator:
       output += "\n"
     self.__output += output
     self.__data_size = len(byte)
-  def __generateInitialize(self):
+  def __generateInitialize( self,
+                            led_matrix : LEDMatrix, 
+                            is_row_direction_slide = None,
+                            is_column_direction_slide = None,
+                            is_no_slide = None):
     output = ""
     output += "ORG 0x0000\n"
     # バンク1に切り替え
@@ -143,9 +147,15 @@ class PICCodeGenerator:
     output += "\tCLRF FSR1H\n"
     output += "\tMOVLW 0x70\n"
     output += "\tMOVWF FSR1L\n"
-    # MATRIXの初期値に0を代入
-    for i in range(8):
-      output += "\tCLRF MATRIX" + str(i) + "\n"
+    if is_column_direction_slide != None:
+      # MATRICの初期値に255を代入
+      output += "\tMOVLW 0xff\n"
+      for i in range(8):
+        output += "\tMOVWF MATRIX" + str(i) + "\n"
+    elif is_row_direction_slide != None or is_no_slide != None:
+      # MATRIXの初期値に0を代入
+      for i in range(8):
+        output += "\tCLRF MATRIX" + str(i) + "\n"
     # SIZEの初期値に0を代入
     output += "\tCLRF SIZE_H\n"
     output += "\tCLRF SIZE_L\n"
@@ -228,15 +238,14 @@ class PICCodeGenerator:
       print("未実装")
     elif self.__hardware.angle == 90:
       for i in range(8):
-        output += "\tMOVIW FSR1++\n"
         if is_column_direction_slide != None:
-          print("実装中")
-          # output += "\tMOVWF " + self.__hardware.row_port + "\n"
-          # output += "\tMOVLW " + str(hex(self.__hardware.column_pin[i])) + "\n"
-          # output += "\tMOVWF " + self.__hardware.column_port + "\n"
-        else:
+          output += "\tMOVLW " + str(hex(1 << self.__hardware.column_pin[7 - i])) + "\n"
           output += "\tMOVWF " + self.__hardware.column_port + "\n"
-
+          output += "\tMOVIW FSR1++\n"
+          output += "\tMOVWF " + self.__hardware.row_port + "\n"
+        else:
+          output += "\tMOVIW FSR1++\n"
+          output += "\tMOVWF " + self.__hardware.column_port + "\n"
           output += "\tMOVLW " + str(hex(255 - (1 << self.__hardware.row_pin[i]))) + "\n"
           output += "\tMOVWF " + self.__hardware.row_port + "\n"
         output += "\tCALL LED_DELAY\n"
@@ -279,7 +288,8 @@ class PICCodeGenerator:
     self.__output = ""
     self.__generateConfig(led_matrix, is_row_direction_slide, 
                           is_column_direction_slide, is_no_slide)
-    self.__generateInitialize()
+    self.__generateInitialize(led_matrix, is_row_direction_slide, 
+                              is_column_direction_slide, is_no_slide)
     self.__generateMainLoop(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)
     self.__generateMatrixData(led_matrix, is_row_direction_slide, 
@@ -312,15 +322,29 @@ if __name__ == '__main__':
   row_converter = FontConverter_RowDirection(d)
   # a = row_converter.convert('  WELCOME TMCIT')
   # s = '  さんぎこうせんあらかわキャンパスへようこそ'
-  s = '  じょうほうつうしんこうがくコース'
+  # s = '  じょうほうつうしんこうがくコース'
+  s = '  あいうえお  '
   s_len = getStringLendth(s)
   led = LEDMatrix(mat=row_converter.convert(s))
-  m = led.get()
+  led.verticalReading()
+
+  led_column_slide = LEDMatrix(column_size=8, row_size=8)
+  print(len(led.get()))
+  for i in range(1, len(led.get()) - 8):
+    printBitMatrix(led.getSplitedMatrix(row_offset=i))
+    led_column_slide.add(mat=led.getSplitedMatrix(row_offset=i), add_row_last=True)
+  led_column_slide.horizontalReading()
+  # m = led.get()
+  m = led_column_slide.get()
+  # printBitMatrix(m)
+  led_column_slide.print()
+  # print(m)
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
   pic = PICCodeGenerator(hw_info, 8)
-  pic.generate(led, is_row_direction_slide=True)
+  # pic.generate(led, is_column_direction_slide=True)
+  # pic.generate(led, is_row_direction_slide=True)
   # pic = PICCodeGenerator(hw_info, 1)
-  # pic.generate(led, is_no_slide=True)
+  pic.generate(led_column_slide, is_no_slide=True)
   os.makedirs("tmp", exist_ok=True)
   with open("tmp/test.asm", mode="w") as f:
     f.write(pic.getOutput())
