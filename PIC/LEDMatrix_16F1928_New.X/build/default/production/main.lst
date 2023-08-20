@@ -1,4 +1,4 @@
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  1
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 000D   3070           00033         MOVLW 0x70
 000E   0086           00034         MOVWF FSR1L
 000F   01F0           00035         CLRF MATRIX0
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  2
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -88,180 +88,164 @@ Message[305]: Using default destination of 1 (file).
        3400 
 0025   3400 3400 3400 00057         DT 0x0,0x0,0x0,0x0
        3400 
-0029   3400 347E 3401 00058         DT 0x0,0x7e,0x1,0x41
+0029   3400 3410 3420 00058         DT 0x0,0x10,0x20,0x40
+       3440 
+002D   3420 3410 3400 00059         DT 0x20,0x10,0x0,0x0
+       3400 
+0031   3400 3400 340C 00060         DT 0x0,0x0,0xc,0xc
+       340C 
+0035   3400 3400 3400 00061         DT 0x0,0x0,0x0,0x0
+       3400 
+0039   3400 3410 3420 00062         DT 0x0,0x10,0x20,0x40
+       3440 
+003D   3420 3410 3400 00063         DT 0x20,0x10,0x0,0x0
+       3400 
+0041   3400 3400 3421 00064         DT 0x0,0x0,0x21,0x7f
+       347F 
+0045   3401 3400 3400 00065         DT 0x1,0x0,0x0,0x0
+       3400 
+0049   3400 3423 3445 00066         DT 0x0,0x23,0x45,0x45
+       3445 
+004D   3449 3449 3431 00067         DT 0x49,0x49,0x31,0x0
+       3400 
+0051   3400 3422 3441 00068         DT 0x0,0x22,0x41,0x49
+       3449 
+0055   3449 3449 3436 00069         DT 0x49,0x49,0x36,0x0
+       3400 
+0059   3440 3440 3440 00070         DT 0x40,0x40,0x40,0x7f
+       347F 
+005D   3440 3440 3440 00071         DT 0x40,0x40,0x40,0x0
+       3400 
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0061   347F 3420 3418 00072         DT 0x7f,0x20,0x18,0x6
+       3406 
+0065   3418 3420 347F 00073         DT 0x18,0x20,0x7f,0x0
+       3400 
+0069   3400 343E 3441 00074         DT 0x0,0x3e,0x41,0x41
        3441 
-002D   3401 3442 3404 00059         DT 0x1,0x42,0x4,0x0
+006D   3441 3441 3422 00075         DT 0x41,0x41,0x22,0x0
        3400 
-0031   3402 3405 3405 00060         DT 0x2,0x5,0x5,0x3e
-       343E 
-0035   3412 3401 3400 00061         DT 0x12,0x1,0x0,0x0
+0071   3400 3400 3441 00076         DT 0x0,0x0,0x41,0x7f
+       347F 
+0075   3441 3400 3400 00077         DT 0x41,0x0,0x0,0x0
        3400 
-0039   3408 3450 3451 00062         DT 0x8,0x50,0x51,0x51
-       3451 
-003D   3452 3452 340C 00063         DT 0x52,0x52,0xc,0x0
+0079   3440 3440 3440 00078         DT 0x40,0x40,0x40,0x7f
+       347F 
+007D   3440 3440 3440 00079         DT 0x40,0x40,0x40,0x0
        3400 
-0041   347F 3402 3455 00064         DT 0x7f,0x2,0x55,0x55
-       3455 
-0045   347F 3452 3451 00065         DT 0x7f,0x52,0x51,0x0
+0081   3400 3400 3400 00080         DT 0x0,0x0,0x0,0x0
        3400 
-0049   3408 3450 3451 00066         DT 0x8,0x50,0x51,0x51
-       3451 
-004D   3452 3452 340C 00067         DT 0x52,0x52,0xc,0x0
+0085   3400 3400 3400 00081         DT 0x0,0x0,0x0,0x0
        3400 
-0051   3410 3410 3421 00068         DT 0x10,0x10,0x21,0x21
-       3421 
-0055   3421 3422 341C 00069         DT 0x21,0x22,0x1c,0x0
-       3400 
-0059   3408 3450 3451 00070         DT 0x8,0x50,0x51,0x51
-       3451 
-005D   3452 3452 340C 00071         DT 0x52,0x52,0xc,0x0
-       3400 
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  3
+0089                  00082 LOAD
+0089   0871           00083         MOVF MATRIX1, W
+008A   00F0           00084         MOVWF MATRIX0
+008B   0872           00085         MOVF MATRIX2, W
+008C   00F1           00086         MOVWF MATRIX1
+008D   0873           00087         MOVF MATRIX3, W
+008E   00F2           00088         MOVWF MATRIX2
+008F   0874           00089         MOVF MATRIX4, W
+0090   00F3           00090         MOVWF MATRIX3
+0091   0875           00091         MOVF MATRIX5, W
+0092   00F4           00092         MOVWF MATRIX4
+0093   0876           00093         MOVF MATRIX6, W
+0094   00F5           00094         MOVWF MATRIX5
+0095   0877           00095         MOVF MATRIX7, W
+0096   00F6           00096         MOVWF MATRIX6
+0097   3F00           00097         MOVIW 0[FSR0]
+0098   00F7           00098         MOVWF MATRIX7
+0099   3101           00099         ADDFSR FSR0, 0x01
+009A   0AFD           00100         INCF SIZE_L, F
+009B   1903           00101         BTFSC STATUS, Z
+009C   0AFC           00102         INCF SIZE_H, F
+009D   3000           00103         MOVLW 0x0
+009E   027C           00104         SUBWF SIZE_H, W
+009F   1D03           00105         BTFSS STATUS, Z
+00A0   0008           00106         RETURN
+00A1   3068           00107         MOVLW 0x68
+00A2   027D           00108         SUBWF SIZE_L, W
+00A3   1D03           00109         BTFSS STATUS, Z
+00A4   0008           00110         RETURN
+00A5   01FC           00111         CLRF SIZE_H
+00A6   01FD           00112         CLRF SIZE_L
+00A7   30??           00113         MOVLW HIGH LEDMATRIX_DATA
+00A8   0085           00114         MOVWF FSR0H
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0061   3400 347E 3401 00072         DT 0x0,0x7e,0x1,0x1
-       3401 
-0065   3401 3402 3404 00073         DT 0x1,0x2,0x4,0x0
-       3400 
-0069   3401 3406 3418 00074         DT 0x1,0x6,0x18,0x68
-       3468 
-006D   3406 3401 3406 00075         DT 0x6,0x1,0x6,0x0
-       3400 
-0071   3402 3425 3421 00076         DT 0x2,0x25,0x21,0x21
-       3421 
-0075   3421 3421 3401 00077         DT 0x21,0x21,0x1,0x0
-       3400 
-0079   3408 3450 3451 00078         DT 0x8,0x50,0x51,0x51
-       3451 
-007D   3452 3452 340C 00079         DT 0x52,0x52,0xc,0x0
-       3400 
-0081   3423 342C 3471 00080         DT 0x23,0x2c,0x71,0x21
-       3421 
-0085   345E 3400 3458 00081         DT 0x5e,0x0,0x58,0x0
-       3400 
-0089   3408 3414 3414 00082         DT 0x8,0x14,0x14,0x22
-       3422 
-008D   3422 3441 3400 00083         DT 0x22,0x41,0x0,0x0
-       3400 
-0091   3421 3421 3421 00084         DT 0x21,0x21,0x21,0x21
-       3421 
-0095   3421 3421 343F 00085         DT 0x21,0x21,0x3f,0x0
-       3400 
-0099   3410 3408 3408 00086         DT 0x10,0x8,0x8,0x8
-       3408 
-009D   3408 3408 3408 00087         DT 0x8,0x8,0x8,0x0
-       3400 
-00A1   3401 3421 3422 00088         DT 0x1,0x21,0x22,0x22
-       3422 
-00A5   3424 343A 3401 00089         DT 0x24,0x3a,0x1,0x0
-       3400 
-00A9                  00090 LOAD
-00A9   0871           00091         MOVF MATRIX1, W
-00AA   00F0           00092         MOVWF MATRIX0
-00AB   0872           00093         MOVF MATRIX2, W
-00AC   00F1           00094         MOVWF MATRIX1
-00AD   0873           00095         MOVF MATRIX3, W
-00AE   00F2           00096         MOVWF MATRIX2
-00AF   0874           00097         MOVF MATRIX4, W
-00B0   00F3           00098         MOVWF MATRIX3
-00B1   0875           00099         MOVF MATRIX5, W
-00B2   00F4           00100         MOVWF MATRIX4
-00B3   0876           00101         MOVF MATRIX6, W
-00B4   00F5           00102         MOVWF MATRIX5
-00B5   0877           00103         MOVF MATRIX7, W
-00B6   00F6           00104         MOVWF MATRIX6
-00B7   3F00           00105         MOVIW 0[FSR0]
-00B8   00F7           00106         MOVWF MATRIX7
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  4
+00A9   30??           00115         MOVLW LOW LEDMATRIX_DATA
+00AA   0084           00116         MOVWF FSR0L
+00AB   0008           00117         RETURN
+00AC                  00118 LEDMATRIX
+00AC   0016           00119         MOVIW FSR1++
+00AD   008E           00120         MOVWF PORTC
+00AE   30FE           00121         MOVLW 0xfe
+00AF   008C           00122         MOVWF PORTA
+00B0   2???           00123         CALL LED_DELAY
+00B1   0016           00124         MOVIW FSR1++
+00B2   008E           00125         MOVWF PORTC
+00B3   30BF           00126         MOVLW 0xbf
+00B4   008C           00127         MOVWF PORTA
+00B5   2???           00128         CALL LED_DELAY
+00B6   0016           00129         MOVIW FSR1++
+00B7   008E           00130         MOVWF PORTC
+00B8   30FD           00131         MOVLW 0xfd
+00B9   008C           00132         MOVWF PORTA
+00BA   2???           00133         CALL LED_DELAY
+00BB   0016           00134         MOVIW FSR1++
+00BC   008E           00135         MOVWF PORTC
+00BD   30F7           00136         MOVLW 0xf7
+00BE   008C           00137         MOVWF PORTA
+00BF   2???           00138         CALL LED_DELAY
+00C0   0016           00139         MOVIW FSR1++
+00C1   008E           00140         MOVWF PORTC
+00C2   30DF           00141         MOVLW 0xdf
+00C3   008C           00142         MOVWF PORTA
+00C4   2???           00143         CALL LED_DELAY
+00C5   0016           00144         MOVIW FSR1++
+00C6   008E           00145         MOVWF PORTC
+00C7   30FB           00146         MOVLW 0xfb
+00C8   008C           00147         MOVWF PORTA
+00C9   2???           00148         CALL LED_DELAY
+00CA   0016           00149         MOVIW FSR1++
+00CB   008E           00150         MOVWF PORTC
+00CC   307F           00151         MOVLW 0x7f
+00CD   008C           00152         MOVWF PORTA
+00CE   2???           00153         CALL LED_DELAY
+00CF   0016           00154         MOVIW FSR1++
+00D0   008E           00155         MOVWF PORTC
+00D1   30EF           00156         MOVLW 0xef
+00D2   008C           00157         MOVWF PORTA
+00D3   2???           00158         CALL LED_DELAY
+00D4   3070           00159         MOVLW 0x70
+00D5   0086           00160         MOVWF FSR1L
+00D6   0008           00161         RETURN
+00D7                  00162 LED_DELAY
+00D7   30F9           00163         MOVLW D'249'
+00D8   00F8           00164         MOVWF CNT0
+00D9                  00165 LED_DELAY_JUMP0
+00D9   0000           00166         NOP
+00DA   0000           00167         NOP
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00B9   3101           00107         ADDFSR FSR0, 0x01
-00BA   0AFD           00108         INCF SIZE_L, F
-00BB   1903           00109         BTFSC STATUS, Z
-00BC   0AFC           00110         INCF SIZE_H, F
-00BD   3000           00111         MOVLW 0x0
-00BE   027C           00112         SUBWF SIZE_H, W
-00BF   1D03           00113         BTFSS STATUS, Z
-00C0   0008           00114         RETURN
-00C1   3088           00115         MOVLW 0x88
-00C2   027D           00116         SUBWF SIZE_L, W
-00C3   1D03           00117         BTFSS STATUS, Z
-00C4   0008           00118         RETURN
-00C5   01FC           00119         CLRF SIZE_H
-00C6   01FD           00120         CLRF SIZE_L
-00C7   30??           00121         MOVLW HIGH LEDMATRIX_DATA
-00C8   0085           00122         MOVWF FSR0H
-00C9   30??           00123         MOVLW LOW LEDMATRIX_DATA
-00CA   0084           00124         MOVWF FSR0L
-00CB   0008           00125         RETURN
-00CC                  00126 LEDMATRIX
-00CC   0016           00127         MOVIW FSR1++
-00CD   008E           00128         MOVWF PORTC
-00CE   30FE           00129         MOVLW 0xfe
-00CF   008C           00130         MOVWF PORTA
-00D0   2???           00131         CALL LED_DELAY
-00D1   0016           00132         MOVIW FSR1++
-00D2   008E           00133         MOVWF PORTC
-00D3   30BF           00134         MOVLW 0xbf
-00D4   008C           00135         MOVWF PORTA
-00D5   2???           00136         CALL LED_DELAY
-00D6   0016           00137         MOVIW FSR1++
-00D7   008E           00138         MOVWF PORTC
-00D8   30FD           00139         MOVLW 0xfd
-00D9   008C           00140         MOVWF PORTA
-00DA   2???           00141         CALL LED_DELAY
-00DB   0016           00142         MOVIW FSR1++
-00DC   008E           00143         MOVWF PORTC
-00DD   30F7           00144         MOVLW 0xf7
-00DE   008C           00145         MOVWF PORTA
-00DF   2???           00146         CALL LED_DELAY
-00E0   0016           00147         MOVIW FSR1++
-00E1   008E           00148         MOVWF PORTC
-00E2   30DF           00149         MOVLW 0xdf
-00E3   008C           00150         MOVWF PORTA
-00E4   2???           00151         CALL LED_DELAY
-00E5   0016           00152         MOVIW FSR1++
-00E6   008E           00153         MOVWF PORTC
-00E7   30FB           00154         MOVLW 0xfb
-00E8   008C           00155         MOVWF PORTA
-00E9   2???           00156         CALL LED_DELAY
-00EA   0016           00157         MOVIW FSR1++
-00EB   008E           00158         MOVWF PORTC
-00EC   307F           00159         MOVLW 0x7f
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  5
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-00ED   008C           00160         MOVWF PORTA
-00EE   2???           00161         CALL LED_DELAY
-00EF   0016           00162         MOVIW FSR1++
-00F0   008E           00163         MOVWF PORTC
-00F1   30EF           00164         MOVLW 0xef
-00F2   008C           00165         MOVWF PORTA
-00F3   2???           00166         CALL LED_DELAY
-00F4   3070           00167         MOVLW 0x70
-00F5   0086           00168         MOVWF FSR1L
-00F6   0008           00169         RETURN
-00F7                  00170 LED_DELAY
-00F7   30F9           00171         MOVLW D'249'
-00F8   00F8           00172         MOVWF CNT0
-00F9                  00173 LED_DELAY_JUMP0
-00F9   0000           00174         NOP
-00FA   0000           00175         NOP
-00FB   0BF8           00176         DECFSZ CNT0, F
-00FC   2???           00177         GOTO LED_DELAY_JUMP0
-00FD   0008           00178         RETURN
+00DB   0BF8           00168         DECFSZ CNT0, F
+00DC   2???           00169         GOTO LED_DELAY_JUMP0
+00DD   0008           00170         RETURN
 Warning[205]: Found directive in column 1. (END)
-0984 3CFF             00179 END
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  6
+0984 3CFF             00171 END
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  6
 
 
 SYMBOL TABLE
@@ -320,7 +304,7 @@ BRG16                             00000003
 BRGH                              00000002
 BSR                               00000008
 BSR0                              00000000
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  7
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  7
 
 
 SYMBOL TABLE
@@ -379,7 +363,7 @@ CCP1AS1                           00000005
 CCP1AS2                           00000006
 CCP1ASE                           00000007
 CCP1CON                           00000293
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  8
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  8
 
 
 SYMBOL TABLE
@@ -438,7 +422,7 @@ CCPR2                             00000298
 CCPR2H                            00000299
 CCPR2L                            00000298
 CCPR3                             00000311
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE  9
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE  9
 
 
 SYMBOL TABLE
@@ -497,7 +481,7 @@ DACPSS0                           00000002
 DACPSS1                           00000003
 DACR0                             00000000
 DACR1                             00000001
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 10
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 10
 
 
 SYMBOL TABLE
@@ -556,7 +540,7 @@ GO                                00000001
 GO_NOT_DONE                       00000001
 HFIOFL                            00000003
 HFIOFR                            00000004
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 11
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 11
 
 
 SYMBOL TABLE
@@ -615,7 +599,7 @@ LATB                              0000010D
 LATB0                             00000000
 LATB1                             00000001
 LATB2                             00000002
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 12
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 12
 
 
 SYMBOL TABLE
@@ -662,19 +646,19 @@ LCDREF                            00000793
 LCDRL                             00000795
 LCDSE0                            00000798
 LCDSE1                            00000799
-LEDMATRIX                         000000CC
+LEDMATRIX                         000000AC
 LEDMATRIX_DATA                    00000021
-LED_DELAY                         000000F7
-LED_DELAY_JUMP0                   000000F9
+LED_DELAY                         000000D7
+LED_DELAY_JUMP0                   000000D9
 LFIOFR                            00000001
 LMUX0                             00000000
 LMUX1                             00000001
-LOAD                              000000A9
+LOAD                              00000089
 LOOP                              0000001A
 LOOP_CNT                          0000007B
 LOOP_JUMP0                        0000001D
 LP0                               00000000
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 13
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 13
 
 
 SYMBOL TABLE
@@ -733,7 +717,7 @@ P1RSEN                            00000007
 P2BSEL                            00000004
 P2DC0                             00000000
 P2DC1                             00000001
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 14
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 14
 
 
 SYMBOL TABLE
@@ -792,7 +776,7 @@ PSS2BD0                           00000000
 PSS2BD1                           00000001
 PSS3AC0                           00000002
 PSS3AC1                           00000003
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 15
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 15
 
 
 SYMBOL TABLE
@@ -851,7 +835,7 @@ SCS0                              00000000
 SCS1                              00000001
 SDAHT                             00000003
 SE0                               00000000
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 16
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 16
 
 
 SYMBOL TABLE
@@ -910,7 +894,7 @@ SEG2COM2                          00000002
 SEG2COM3                          00000002
 SEG3COM0                          00000003
 SEG3COM1                          00000003
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 17
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 17
 
 
 SYMBOL TABLE
@@ -969,7 +953,7 @@ SRPR                              00000000
 SRPS                              00000001
 SRQEN                             00000003
 SRRC1E                            00000000
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 18
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 18
 
 
 SYMBOL TABLE
@@ -1028,7 +1012,7 @@ T0SE                              00000004
 T0XCS                             00000000
 T1CKPS0                           00000004
 T1CKPS1                           00000005
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 19
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 19
 
 
 SYMBOL TABLE
@@ -1087,7 +1071,7 @@ TMR1ON                            00000000
 TMR2                              0000001A
 TMR2IE                            00000001
 TMR2IF                            00000001
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 20
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 20
 
 
 SYMBOL TABLE
@@ -1146,7 +1130,7 @@ TX9                               00000006
 TX9D                              00000000
 TXEN                              00000005
 TXIE                              00000004
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 21
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 21
 
 
 SYMBOL TABLE
@@ -1205,7 +1189,7 @@ _CPD_OFF                          00003FFF
 _CPD_ON                           00003EFF
 _CP_OFF                           00003FFF
 _CP_ON                            00003F7F
-MPASM 5.77                          MAIN.ASM   8-18-2023  0:41:45         PAGE 22
+MPASM 5.77                          MAIN.ASM   8-20-2023  21:52:58         PAGE 22
 
 
 SYMBOL TABLE
