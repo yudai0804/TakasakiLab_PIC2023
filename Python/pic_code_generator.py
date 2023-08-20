@@ -78,11 +78,10 @@ class PICCodeGenerator:
       if is_row_direction_slide != None or is_no_slide != None:
         for i in range(len(mat[0]) // 8):
           split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
-          split_led = LEDMatrix(mat = split_bit)
-          for i in range(8):
+          for j in range(8):
             tmp_byte = 0
-            for j in range(8):
-              tmp_byte += split_bit[7-j][i] << j
+            for k in range(8):
+              tmp_byte += split_bit[7 - k][j] << k
             byte.append(tmp_byte)
       elif is_column_direction_slide != None:
         print("実装中")
@@ -318,10 +317,10 @@ if __name__ == '__main__':
   led = LEDMatrix(mat=row_converter.convert(s))
   m = led.get()
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
-  # pic = PICCodeGenerator(hw_info, 8)
-  # pic.generate(led, is_row_direction_slide=True)
-  pic = PICCodeGenerator(hw_info, 1)
-  pic.generate(led, is_no_slide=True)
+  pic = PICCodeGenerator(hw_info, 8)
+  pic.generate(led, is_row_direction_slide=True)
+  # pic = PICCodeGenerator(hw_info, 1)
+  # pic.generate(led, is_no_slide=True)
   os.makedirs("tmp", exist_ok=True)
   with open("tmp/test.asm", mode="w") as f:
     f.write(pic.getOutput())
