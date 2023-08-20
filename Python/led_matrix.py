@@ -47,6 +47,8 @@ class LEDMatrix:
 				for j in range(len(mat[0])):
 					tmp[i][j + len(self.__mat[0])] = mat[i][j]
 			self.__mat = tmp
+		else:
+			print("add error")
 	
 	def rotate90(self):
 		new_m = [[0] * len(self.__mat) for i in range(len(self.__mat[0]))]

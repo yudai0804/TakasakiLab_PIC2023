@@ -317,36 +317,41 @@ if __name__ == '__main__':
   from font_loader import *
   from util import *
   import os
+
+  mode = 1
+
   f = FontLoader('./misaki_gothic_2nd.bdf')
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
-  # a = row_converter.convert('  WELCOME TMCIT')
-  # s = '  さんぎこうせんあらかわキャンパスへようこそ'
-  # s = '  じょうほうつうしんこうがくコース'
-  s = '  あいうえお  '
+  s = "  さんぎこうせんへようこそ  "
   s_len = getStringLendth(s)
   led = LEDMatrix(mat=row_converter.convert(s))
-  led.verticalReading()
-
-  led_column_slide = LEDMatrix(column_size=8, row_size=8)
-  print(len(led.get()))
-  for i in range(1, len(led.get()) - 8):
-    printBitMatrix(led.getSplitedMatrix(row_offset=i))
-    led_column_slide.add(mat=led.getSplitedMatrix(row_offset=i), add_row_last=True)
-  led_column_slide.horizontalReading()
-  # m = led.get()
-  m = led_column_slide.get()
-  # printBitMatrix(m)
-  led_column_slide.print()
-  # print(m)
   hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
-  pic = PICCodeGenerator(hw_info, 8)
-  # pic.generate(led, is_column_direction_slide=True)
-  # pic.generate(led, is_row_direction_slide=True)
-  # pic = PICCodeGenerator(hw_info, 1)
-  pic.generate(led_column_slide, is_no_slide=True)
+
+  if mode == 1:
+    # row slide
+    pic = PICCodeGenerator(hw_info, 8)
+    pic.generate(led, is_row_direction_slide=True)
+  elif mode == 2:
+    # column slide
+    # column slideの実装ではなく，no_slideの実装を流用しているので注意
+    pic = PICCodeGenerator(hw_info, 8)
+    led.verticalReading()
+    led_column_slide = LEDMatrix(column_size=8, row_size=8)
+    for i in range(1, len(led.get()) - 8):
+      led_column_slide.add(mat=led.getSplitedMatrix(row_offset=i), add_row_last=True)
+    led_column_slide.horizontalReading()
+    pic.generate(led_column_slide, is_no_slide=True)
+  elif mode == 3:
+    # no_slide
+    pic = PICCodeGenerator(hw_info, 1)
+    led_no_slide = LEDMatrix(mat = led.getSplitedMatrix())
+    for i in range(1, len(led.get()[0]) // 8):
+      led_no_slide.add(mat = led.getSplitedMatrix(column_offset=8*i), add_column_last=True)
+    pic.generate(led_matrix=led_no_slide, is_no_slide=True)
+  else:
+    print("mode error")
+  # tmpディレクトリにアセンブラのコードを生成
   os.makedirs("tmp", exist_ok=True)
   with open("tmp/test.asm", mode="w") as f:
     f.write(pic.getOutput())
-
-  # print(pic.getOutput())
