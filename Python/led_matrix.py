@@ -21,8 +21,7 @@ class LEDMatrix:
 		if led_matrix != None:
 			mat = led_matrix.get()
 		if mat == None:
-			print("matrix error")
-			return
+			raise Exception("argument error")
 		if add_row_last != None:
 			row_size = len(self.__mat[0])
 			if len(mat[0]) > row_size:
@@ -48,7 +47,7 @@ class LEDMatrix:
 					tmp[i][j + len(self.__mat[0])] = mat[i][j]
 			self.__mat = tmp
 		else:
-			print("add error")
+			raise Exception("add error")
 	
 	def rotate90(self):
 		new_m = [[0] * len(self.__mat) for i in range(len(self.__mat[0]))]
@@ -76,8 +75,7 @@ class LEDMatrix:
 		angleは0,90,180,270のどれか
 		"""
 		if angle != 0 and angle != 90 and angle != 180 and angle != 270:
-			print("angle error")
-			return
+			raise Exception("argument error")
 		elif angle == 90:
 			self.rotate90()
 		elif angle == 180:
@@ -90,8 +88,7 @@ class LEDMatrix:
 		"""横読みを縦読みに変換する"""
 		# 大きさが利用可能かを確認
 		if len(self.__mat) % char_size != 0 or len(self.__mat[0]) % char_size != 0:
-			print("verticalReading error")
-			return
+			raise Exception("argument error")
 		tmp = LEDMatrix(mat = self.getSplitedMatrix(row_size=char_size, column_size=char_size))
 		for i in range(1, len(self.__mat[0]) // char_size):
 			tmp_char = self.getSplitedMatrix(row_size=char_size, column_size=char_size, column_offset=char_size*i)
@@ -102,8 +99,7 @@ class LEDMatrix:
 		"""縦読みを横読みに変換する"""
 		# 大きさが利用可能かを確認
 		if len(self.__mat) % char_size != 0 or len(self.__mat[0]) % char_size != 0:
-			print("verticalReading error")
-			return
+			raise Exception("argument error")
 		tmp = LEDMatrix(mat = self.getSplitedMatrix(row_size=char_size, column_size=char_size))
 		for i in range(1, len(self.__mat) // char_size):
 			tmp_char = self.getSplitedMatrix(row_size=char_size, column_size=char_size, row_offset=char_size*i)
@@ -158,8 +154,7 @@ class LEDMatrix:
 		angleは0,90,180,270のどれか
 		"""
 		if angle != 0 and angle != 90 and angle != 180 and angle != 270:
-			print("angle error")
-			return
+			raise Exception("argument error")
 		elif angle == 0:
 			return self.get()
 		elif angle == 90:
@@ -196,8 +191,7 @@ def convertMat_BitToByte(mat):
 	m = []
 	column = 0
 	if len(mat) % 8 != 0 and (len(mat[0]) % 8) != 0:
-		print('matrix error')
-		return
+		raise Exception("argument error")
 	m = [0] * 8
 	for i in range(len(mat)):
 		for j in range(len(mat[0])):

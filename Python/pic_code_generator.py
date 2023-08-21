@@ -259,8 +259,8 @@ class PICCodeGenerator:
     output += "\tRETURN\n"
     delay = PICCodeGenerator_Delay(self.__one_cycle_ns, label_name="LED_DELAY_JUMP")
     delay_str = delay.generateDelay(self.__led_delay_us, "us", "LED_DELAY")
-    if delay_str == "":
-      print("delay generate error")
+    if delay_str == ";Generate Failed\n":
+      Exception("delay generate error")
       return
     self.__output += output
     self.__output += delay_str
@@ -273,7 +273,7 @@ class PICCodeGenerator:
     mat = led_matrix.get()
     if len(mat) % 8 != 0 or len(mat[0]) % 8 != 0:
       print("led matrix error")
-      return
+      raise Exception("led matrix error")
     flag = 0
     if is_row_direction_slide != None:
       flag += 1
@@ -282,8 +282,7 @@ class PICCodeGenerator:
     if is_no_slide != None:
       flag += 1
     if flag != 1:
-      print("argument error")
-      return
+      raise Exception("argument error")
     
     self.__output = ""
     self.__generateConfig(led_matrix, is_row_direction_slide, 
@@ -309,51 +308,15 @@ class PICCodeGenerator:
                               "PORTC",
                               [0,1,2,3,4,5,6,7])
       return h
+    elif is_saito != None:
+      raise Exception("さいとう君の基板でも動作確認する！")
+      h = HardwareInformation(90,
+                              "PORTA",
+                              [0,6,1,3,5,2,7,4],
+                              "PORTC",
+                              [0,1,2,3,4,5,6,7])
+      return h
+    else:
+      raise Exception("argument error")
   def getOutput(self):
     return self.__output
-
-if __name__ == '__main__':
-  from font_converter_row_direction import *
-  from font_loader import *
-  from util import *
-  import os
-
-  mode = 1
-
-  f = FontLoader('./misaki_gothic_2nd.bdf')
-  d = f.getDictionary()
-  row_converter = FontConverter_RowDirection(d)
-  s = "  さんぎこうせんへようこそ  "
-  # s = "  ＾・＾123TMCIT  "
-  s = convertHalfWordToWord(s)
-  s_len = getStringLendth(s)
-  led = LEDMatrix(mat=row_converter.convert(s))
-  hw_info = PICCodeGenerator.getHardwareInformation(is_suehiro=True)
-
-  if mode == 1:
-    # row slide
-    pic = PICCodeGenerator(hw_info, 8)
-    pic.generate(led, is_row_direction_slide=True)
-  elif mode == 2:
-    # column slide
-    # column slideの実装ではなく，no_slideの実装を流用しているので注意
-    pic = PICCodeGenerator(hw_info, 8)
-    led.verticalReading()
-    led_column_slide = LEDMatrix(column_size=8, row_size=8)
-    for i in range(1, len(led.get()) - 8):
-      led_column_slide.add(mat=led.getSplitedMatrix(row_offset=i), add_row_last=True)
-    led_column_slide.horizontalReading()
-    pic.generate(led_column_slide, is_no_slide=True)
-  elif mode == 3:
-    # no_slide
-    pic = PICCodeGenerator(hw_info, 1)
-    led_no_slide = LEDMatrix(mat = led.getSplitedMatrix())
-    for i in range(1, len(led.get()[0]) // 8):
-      led_no_slide.add(mat = led.getSplitedMatrix(column_offset=8*i), add_column_last=True)
-    pic.generate(led_matrix=led_no_slide, is_no_slide=True)
-  else:
-    print("mode error")
-  # アセンブラディレクトリにアセンブラのコードを生成
-  os.makedirs("asm", exist_ok=True)
-  with open(".././asm/main.asm", mode="w") as f:
-    f.write(pic.getOutput())
