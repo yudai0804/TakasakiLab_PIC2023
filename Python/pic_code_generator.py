@@ -323,8 +323,8 @@ if __name__ == '__main__':
   f = FontLoader('./misaki_gothic_2nd.bdf')
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
-  # s = "  さんぎこうせんへようこそ  "
-  s = "  ＾・＾123TMCIT  "
+  s = "  さんぎこうせんへようこそ  "
+  # s = "  ＾・＾123TMCIT  "
   s = convertHalfWordToWord(s)
   s_len = getStringLendth(s)
   led = LEDMatrix(mat=row_converter.convert(s))
@@ -355,5 +355,5 @@ if __name__ == '__main__':
     print("mode error")
   # tmpディレクトリにアセンブラのコードを生成
   os.makedirs("tmp", exist_ok=True)
-  with open("tmp/test.asm", mode="w") as f:
+  with open(".././asm/main.asm", mode="w") as f:
     f.write(pic.getOutput())
