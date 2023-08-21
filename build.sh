@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 cd `dirname $0`
-CURRENT=$(pwd)
 make clean
 make
 if [ $1 = "-w" ]; then
@@ -8,5 +7,6 @@ if [ $1 = "-w" ]; then
 else
 	:
 fi
+# 書き込み時に生成されるログファイルを削除
 rm -f log.*
 rm -f MPLABXLog.xml*

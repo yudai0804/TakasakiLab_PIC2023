@@ -353,7 +353,7 @@ if __name__ == '__main__':
     pic.generate(led_matrix=led_no_slide, is_no_slide=True)
   else:
     print("mode error")
-  # tmpディレクトリにアセンブラのコードを生成
-  os.makedirs("tmp", exist_ok=True)
+  # アセンブラディレクトリにアセンブラのコードを生成
+  os.makedirs("asm", exist_ok=True)
   with open(".././asm/main.asm", mode="w") as f:
     f.write(pic.getOutput())
