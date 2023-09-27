@@ -309,10 +309,9 @@ class PICCodeGenerator:
                               [0,1,2,3,4,5,6,7])
       return h
     elif is_saito != None:
-      raise Exception("さいとう君の基板でも動作確認する！")
       h = HardwareInformation(90,
                               "PORTA",
-                              [0,6,1,3,5,2,7,4],
+                              [0,6,1,4,5,2,7,3],
                               "PORTC",
                               [0,1,2,3,4,5,6,7])
       return h
