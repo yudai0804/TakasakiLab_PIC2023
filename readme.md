@@ -5,8 +5,12 @@ LEDマトリクスのフォントは[美咲フォント](https://littlelimit.net
 ファイル形式はBDF形式のものを使用している．  
 
 # requirements
+- Windows10,Windows11
 - MPLAB 5.00
 - java
+  - jre-1.8
+  - ダウンロードリンク:https://www.java.com/ja/download/
+  - javaの種類によっては動かないものがあるので注意
 - shell(windowsの場合はgit bash必須)
 
 ## コマンド
