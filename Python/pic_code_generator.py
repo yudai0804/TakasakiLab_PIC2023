@@ -92,7 +92,6 @@ class PICCodeGenerator:
               # rowはカソード側のためビットを反転
               if split_bit[j][k] == 0:
                 tmp_byte += 1 << self.__hardware.row_pin[k]
-              # tmp_byte += ((~split_bit[j][k]) & 1) << self.__hardware.row_pin[k]
             byte.append(tmp_byte)
     elif self.__hardware.angle == 180:
       print("未実装")
