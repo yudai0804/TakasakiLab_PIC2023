@@ -54,7 +54,7 @@ class PICCodeGenerator:
     self.__output += "LIST P=PIC16F1938\n"
     self.__output += "#include<p16f1938.inc>\n"
     self.__output += "__CONFIG\t_CONFIG1, _FOSC_INTOSC & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_OFF & _CLKOUTEN_OFF & _IESO_OFF & _FCMEN_OFF\n"
-    self.__output += "__CONFIG\t_CONFIG2, _WRT_OFF & _VCAPEN_OFF & _PLLEN_OFF & _STVREN_OFF & _BORV_LO & _LVP_ON\n"
+    self.__output += "__CONFIG\t_CONFIG2, _WRT_OFF & _VCAPEN_OFF & _PLLEN_OFF & _STVREN_OFF & _BORV_LO & _LVP_OFF\n"
     for i in range(8):
       self.__output += "MATRIX" + str(i) + "\tEQU\t" + str(hex(112 + i) + "\n")
     for i in range(3):
@@ -184,6 +184,9 @@ class PICCodeGenerator:
                           is_column_direction_slide = None,
                           is_no_slide = None):
     output = "LOAD\n"
+    # ここのコメントアウトを外すとリセットボタンを押したときに文字が止まるようになる
+    # output += "\tBTFSS PORTE, 3\n"
+    # output += "\tRETURN\n"
     if is_row_direction_slide != None or is_column_direction_slide != None:
       # データをシフト
       for i in range(1, 8):
