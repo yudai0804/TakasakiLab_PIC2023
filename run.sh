@@ -4,5 +4,5 @@ cd `dirname $0`
 cd Python
 python pic_code_generator_cli.py
 cd ..
-bash build.sh -w
+make all
 echo "プログラムの書き込みが完了しました"

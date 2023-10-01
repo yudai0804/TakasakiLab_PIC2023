@@ -18,5 +18,7 @@ LEDマトリクスのフォントは[美咲フォント](https://littlelimit.net
 sh run.sh
 ```
 
+[makefileの詳細](https://github.com/yudai0804/pic-makefile-template)
+
 ## 使うPIC
 [PIC16F1938](http://ww1.microchip.com/downloads/jp/DeviceDoc/41574A_JP.pdf)
