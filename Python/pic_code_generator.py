@@ -43,10 +43,10 @@ class PICCodeGenerator:
     if self.__one_flame_us // (8 * self.__led_delay_us) > 255:
       print("error")
     # データの大きさ
-    self.__data_size = 0
+    self.__data_size = []
 
   def __generateConfig( self,
-                        led_matrix : LEDMatrix, 
+                        led_matrix : list[LEDMatrix], 
                         is_row_direction_slide = None,
                         is_column_direction_slide = None,
                         is_no_slide = None):
@@ -60,61 +60,63 @@ class PICCodeGenerator:
     for i in range(3):
       self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
     self.__output += "LOOP_CNT\tEQU\t0x7b\n"
-    self.__output += "SIZE_H\tEQU\t0x7c\n"
-    self.__output += "SIZE_L\tEQU\t0x7d\n"
+    self.__output += "OFFSET_L\tEQU\t0x7c\n"
+    self.__output += "OFFSET_H\tEQU\t0x7d\n"
+    self.__output += "MODE\tEQU\t0x7e\n"
   def __generateMatrixData( self,
-                            led_matrix : LEDMatrix, 
+                            led_matrix : list[LEDMatrix],
                             is_row_direction_slide = None,
                             is_column_direction_slide = None,
                             is_no_slide = None):
-    mat = led_matrix.get()
-    byte = []
     output = ""
-    org_cnt = 0
     if self.__hardware.angle == 0:
       print("未実装")
     elif self.__hardware.angle == 90:
-      # 条件に応じてbitからbyteに変換する
-      if is_row_direction_slide != None or is_no_slide != None:
-        for i in range(len(mat[0]) // 8):
-          split_bit = led_matrix.getSplitedMatrix(column_offset=8 * i)
-          for j in range(8):
-            tmp_byte = 0
+      for i in range(len(led_matrix)):
+        byte = []
+        mat = led_matrix[i].get()
+        # 条件に応じてbitからbyteに変換する
+        if is_row_direction_slide != None or is_no_slide != None:
+          for j in range(len(mat[0]) // 8):
+            split_bit = led_matrix[i].getSplitedMatrix(column_offset=8 * j)
             for k in range(8):
-              tmp_byte += split_bit[7 - k][j] << self.__hardware.column_pin[k]
-            byte.append(tmp_byte)
-      elif is_column_direction_slide != None:
-        for i in range(len(mat) // 8):
-          split_bit = led_matrix.getSplitedMatrix(row_offset=8 * i)
-          for j in range(8):
-            tmp_byte = 0
+              tmp_byte = 0
+              for l in range(8):
+                tmp_byte += split_bit[7 - l][k] << self.__hardware.column_pin[l]
+              byte.append(tmp_byte)
+        elif is_column_direction_slide != None:
+          for j in range(len(mat) // 8):
+            split_bit = led_matrix[i].getSplitedMatrix(row_offset=8 * j)
             for k in range(8):
-              # rowはカソード側のためビットを反転
-              if split_bit[j][k] == 0:
-                tmp_byte += 1 << self.__hardware.row_pin[k]
-            byte.append(tmp_byte)
+              tmp_byte = 0
+              for l in range(8):
+                # rowはカソード側のためビットを反転
+                if split_bit[k][l] == 0:
+                  tmp_byte += 1 << self.__hardware.row_pin[l]
+              byte.append(tmp_byte)
+        # データを書き込む
+        # 理由はわからないが，DTは4バイトずづで区切るとうまくいく
+        # 参考:http://www.picfun.com/pic18/tech18x02.html
+        output = "LEDMATRIX_DATA" + str(i) + "\n\tDT "
+        for j in range(len(byte)):
+          if j % 4 == 0 and j != 0:
+            if output[-1] == ",":
+              output = output.rstrip(",")
+              output += "\n"
+              output += "\tDT "
+          output += str(hex(byte[j])) + ","
+        if output[-1] == ",":
+          output = output.rstrip(",")
+          output += "\n"
+        self.__output += output
+        self.__data_size.append(len(byte))
     elif self.__hardware.angle == 180:
       print("未実装")
     elif self.__hardware.angle == 270:
       print("未実装")
-    # データを書き込む
-    # 理由はわからないが，DTは4バイトずづで区切るとうまくいく
-    # 参考:http://www.picfun.com/pic18/tech18x02.html
-    output = "LEDMATRIX_DATA\n\tDT "
-    for i in range(len(byte)):
-      if i % 4 == 0 and i != 0:
-        if output[-1] == ",":
-          output = output.rstrip(",")
-          output += "\n"
-          output += "\tDT "
-      output += str(hex(byte[i])) + ","
-    if output[-1] == ",":
-      output = output.rstrip(",")
-      output += "\n"
-    self.__output += output
-    self.__data_size = len(byte)
+
   def __generateInitialize( self,
-                            led_matrix : LEDMatrix, 
+                            led_matrix : list[LEDMatrix], 
                             is_row_direction_slide = None,
                             is_column_direction_slide = None,
                             is_no_slide = None):
@@ -138,16 +140,16 @@ class PICCodeGenerator:
     output += "\tCLRF " + self.__hardware.column_port + "\n"
     output += "\tCLRF " + self.__hardware.row_port + "\n"
     # FSR0レジスタをLEDMATRIX_DATA番地に合わせる
-    output += "\tMOVLW HIGH LEDMATRIX_DATA\n"
-    output += "\tMOVWF FSR0H\n"
-    output += "\tMOVLW LOW LEDMATRIX_DATA\n"
+    output += "\tMOVLW LOW LEDMATRIX_DATA0\n"
     output += "\tMOVWF FSR0L\n"
+    output += "\tMOVLW HIGH LEDMATRIX_DATA0\n"
+    output += "\tMOVWF FSR0H\n"
     # FSR1レジスタを0x70番地に合わせる
     output += "\tCLRF FSR1H\n"
     output += "\tMOVLW 0x70\n"
     output += "\tMOVWF FSR1L\n"
     if is_column_direction_slide != None:
-      # MATRICの初期値に255を代入
+      # MATRIXの初期値に255を代入
       output += "\tMOVLW 0xff\n"
       for i in range(8):
         output += "\tMOVWF MATRIX" + str(i) + "\n"
@@ -155,18 +157,21 @@ class PICCodeGenerator:
       # MATRIXの初期値に0を代入
       for i in range(8):
         output += "\tCLRF MATRIX" + str(i) + "\n"
-    # SIZEの初期値に0を代入
-    output += "\tCLRF SIZE_H\n"
-    output += "\tCLRF SIZE_L\n"
+    # OFFSETの初期値に0を代入
+    output += "\tCLRF OFFSET_H\n"
+    output += "\tCLRF OFFSET_L\n"
+    # MODEの初期値に0を代入
+    output += "\tCLRF MODE\n"
     # メインループに飛ぶ
     output += "\tGOTO LOOP\n"
     self.__output += output
   def __generateMainLoop( self,
-                          led_matrix : LEDMatrix, 
+                          led_matrix : list[LEDMatrix], 
                           is_row_direction_slide = None,
                           is_column_direction_slide = None,
                           is_no_slide = None):
     output = "LOOP\n"
+    output += "\tCALL UPDATE_MODE\n"
     output += "\tCALL LOAD\n"
     loop_cnt = self.__one_flame_us // (8 * self.__led_delay_us)
     output += "\tMOVLW D'" + str(loop_cnt) + "'\n"
@@ -178,15 +183,65 @@ class PICCodeGenerator:
     output += "\tGOTO LOOP\n"
     self.__output += output
 
+  def __generateUpdateMode( self,
+                          led_matrix : list[LEDMatrix], 
+                          is_row_direction_slide = None,
+                          is_column_direction_slide = None,
+                          is_no_slide = None):
+    output = "UPDATE_MODE\n"
+    # スイッチが押されていなかった場合はRETURN
+    output += "\tBTFSC PORTE, 3\n"
+    output += "\tRETURN\n"
+    # MATRIXを初期値にする
+    if is_column_direction_slide != None:
+      # MATRIXの初期値に255を代入
+      output += "\tMOVLW 0xff\n"
+      for i in range(8):
+        output += "\tMOVWF MATRIX" + str(i) + "\n"
+    elif is_row_direction_slide != None or is_no_slide != None:
+      # MATRIXの初期値に0を代入
+      for i in range(8):
+        output += "\tCLRF MATRIX" + str(i) + "\n"
+    # LEDを消灯させる
+    # FSR0に過去の値が残った状態で呼び出しているが問題ない
+    output += "\tCALL LEDMATRIX\n"
+    # スイッチが離されるまで待機
+    output += "UPDATE_MODE_JUMP_WAIT\n"
+    output += "\tBTFSS PORTE, 3\n"
+    output += "\tGOTO UPDATE_MODE_JUMP_WAIT\n"
+    # OFFSETをクリア
+    output += "\tCLRF OFFSET_L\n"
+    output += "\tCLRF OFFSET_H\n"
+    # 計算GOTO
+    output += "\tMOVF MODE, W\n"
+    output += "\tADDWF PCL, F\n"
+    for i in range(len(self.__data_size)):
+      output += "\tGOTO UPDATE_MODE_JUMP_" + str(i) + "\n"
+
+    for i in range(len(self.__data_size)):
+      output += "UPDATE_MODE_JUMP_" + str(i) + "\n"
+      if i != len(self.__data_size) - 1:
+        output += "\tINCF MODE\n"
+        output += "\tMOVLW LOW LEDMATRIX_DATA" + str(i+1) + "\n"
+        output += "\tMOVWF FSR0L\n"
+        output += "\tMOVLW HIGH LEDMATRIX_DATA" + str(i+1) + "\n"
+        output += "\tMOVWF FSR0H\n"
+        output += "\tRETURN\n"
+      else:
+        output += "\tCLRF MODE\n"
+        output += "\tMOVLW LOW LEDMATRIX_DATA0\n"
+        output += "\tMOVWF FSR0L\n"
+        output += "\tMOVLW HIGH LEDMATRIX_DATA0\n"
+        output += "\tMOVWF FSR0H\n"
+        output += "\tRETURN\n"
+    
+    self.__output += output
   def __generateLoadData( self,
-                          led_matrix : LEDMatrix, 
+                          led_matrix : list[LEDMatrix], 
                           is_row_direction_slide = None,
                           is_column_direction_slide = None,
                           is_no_slide = None):
     output = "LOAD\n"
-    # ここのコメントアウトを外すとリセットボタンを押したときに文字が止まるようになる
-    # output += "\tBTFSS PORTE, 3\n"
-    # output += "\tRETURN\n"
     if is_row_direction_slide != None or is_column_direction_slide != None:
       # データをシフト
       for i in range(1, 8):
@@ -196,42 +251,49 @@ class PICCodeGenerator:
       output += "\tMOVIW 0[FSR0]\n"
       output += "\tMOVWF MATRIX7\n"
       output += "\tADDFSR FSR0, 0x01\n"
-      # SIZEを更新
-      output += "\tINCF SIZE_L, F\n"
+      # OFFSETを更新
+      output += "\tINCF OFFSET_L, F\n"
       output += "\tBTFSC STATUS, Z\n"
-      output += "\tINCF SIZE_H, F\n"
+      output += "\tINCF OFFSET_H, F\n"
     elif is_no_slide != None:
       # データをFSR0から読む
       for i in range(8):
         output += "\tMOVIW 0[FSR0]\n"
         output += "\tMOVWF MATRIX" + str(i) + "\n"
         output += "\tADDFSR FSR0, 0x01\n"
-        # SIZEを更新
-        output += "\tINCF SIZE_L, F\n"
+        # OFFSETを更新
+        output += "\tINCF OFFSET_L, F\n"
         output += "\tBTFSC STATUS, Z\n"
-        output += "\tINCF SIZE_H, F\n"
-    # FSR0で読んだデータの大きさがSIZEと等しいかを確認する
-    output += "\tMOVLW " + str(hex(self.__data_size // 256)) + "\n"
-    output += "\tSUBWF SIZE_H, W\n"
-    output += "\tBTFSS STATUS, Z\n"
-    output += "\tRETURN\n"
-    output += "\tMOVLW " + str(hex(self.__data_size % 256)) + "\n"
-    output += "\tSUBWF SIZE_L, W\n"
-    output += "\tBTFSS STATUS, Z\n"
-    output += "\tRETURN\n"
-    # SIZEを0にする
-    output += "\tCLRF SIZE_H\n"
-    output += "\tCLRF SIZE_L\n"
-    # FSR0がデータの末尾だった場合はFSR0をLEDMATRIX_DATAに合わせる
-    output += "\tMOVLW HIGH LEDMATRIX_DATA\n"
-    output += "\tMOVWF FSR0H\n"
-    output += "\tMOVLW LOW LEDMATRIX_DATA\n"
-    output += "\tMOVWF FSR0L\n"
-    output += "\tRETURN\n"
+        output += "\tINCF OFFSET_H, F\n"
+    # OFFSETがデータの末尾に到達しているかを確認する
+    # 計算GOTO
+    output += "\tMOVF MODE, W\n"
+    output += "\tADDWF PCL, F\n"
+    for i in range(len(self.__data_size)):
+      output += "\tGOTO LOAD_JUMP_" + str(i) + "\n"
+    for i in range(len(self.__data_size)):
+      output += "LOAD_JUMP_" + str(i) + "\n"
+      output += "\tMOVLW " + str(hex(self.__data_size[i] % 256)) + "\n"
+      output += "\tSUBWF OFFSET_L, W\n"
+      output += "\tBTFSS STATUS, Z\n"
+      output += "\tRETURN\n"
+      output += "\tMOVLW " + str(hex(self.__data_size[i] // 256)) + "\n"
+      output += "\tSUBWF OFFSET_H, W\n"
+      output += "\tBTFSS STATUS, Z\n"
+      output += "\tRETURN\n"
+      # OFFSETを0にする
+      output += "\tCLRF OFFSET_L\n"
+      output += "\tCLRF OFFSET_H\n"
+      # FSR0をOFFSETの位置に戻す
+      output += "\tMOVLW LOW LEDMATRIX_DATA" + str(i) + "\n"
+      output += "\tMOVWF FSR0L\n"
+      output += "\tMOVLW HIGH LEDMATRIX_DATA" + str(i) + "\n"
+      output += "\tMOVWF FSR0H\n"
+      output += "\tRETURN\n"
     self.__output += output
 
   def __generateLightLEDMatrix( self,
-                                led_matrix : LEDMatrix, 
+                                led_matrix : list[LEDMatrix], 
                                 is_row_direction_slide = None,
                                 is_column_direction_slide = None,
                                 is_no_slide = None):
@@ -268,14 +330,15 @@ class PICCodeGenerator:
     self.__output += delay_str
 
   def generate( self,
-                led_matrix : LEDMatrix, 
+                led_matrix : list[LEDMatrix], 
                 is_row_direction_slide = None,
                 is_column_direction_slide = None,
                 is_no_slide = None):
-    mat = led_matrix.get()
-    if len(mat) % 8 != 0 or len(mat[0]) % 8 != 0:
-      print("led matrix error")
-      raise Exception("led matrix error")
+    for i in range(len(led_matrix)):
+      mat = led_matrix[i].get()
+      if len(mat) % 8 != 0 or len(mat[0]) % 8 != 0:
+        print("led matrix error")
+        raise Exception("led matrix error")
     flag = 0
     if is_row_direction_slide != None:
       flag += 1
@@ -294,6 +357,8 @@ class PICCodeGenerator:
     self.__generateMainLoop(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)
     self.__generateMatrixData(led_matrix, is_row_direction_slide, 
+                              is_column_direction_slide, is_no_slide)
+    self.__generateUpdateMode(led_matrix, is_row_direction_slide, 
                               is_column_direction_slide, is_no_slide)
     self.__generateLoadData(led_matrix, is_row_direction_slide, 
                             is_column_direction_slide, is_no_slide)

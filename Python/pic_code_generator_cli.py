@@ -15,21 +15,26 @@ try:
   model = int(input("型式:"))
   if model != 1 and model != 2:
     raise Exception("型式が範囲外です．")
+  num = int(input("表示したいパターン数を入力してください:"))
   print("好きな文字を入力してください．")
   print("出力したい文字に迷ったら「さんぎこうせんへようこそ」がおすすめです．")
-  s = input("出力したい文字:")
-  # 全角に変換
-  s = convertHalfWordToWord(s)
-  # 文字の最初と最後に全角スペースを追加
-  s = "　" + s + "　"
+  s = []
+  led = []
+  for i in range(num):
+    tmp = input("出力したい文字" + str(i+1) + ":")
+    # 全角に変換
+    tmp = convertHalfWordToWord(tmp)
+    # 文字の最初と最後に全角スペースを追加
+    s.append("　" + tmp + "　")
   print("モードを選択してください．")
   print("1:横にスライド，2:縦にスライド，3:スライドしない")
   mode = int(input("モード:"))
   if mode != 1 and mode != 2 and mode != 3:
     raise Exception("モードが範囲外です．")
-  s = convertHalfWordToWord(s)
-  s_len = getStringLendth(s)
-  led = LEDMatrix(mat=row_converter.convert(s))
+  for i in range(num):
+    s_len = getStringLendth(s[i])
+    led.append(LEDMatrix(mat=row_converter.convert(s[i])))
+
   hw_info = None
   pic = PICCodeGenerator(hw_info, 8)
 
@@ -44,19 +49,23 @@ try:
   elif mode == 2:
     # column slide
     # column slideの実装ではなく，no_slideの実装を流用しているので注意
+    led_column_slide = []
     pic = PICCodeGenerator(hw_info, 8)
-    led.verticalReading()
-    led_column_slide = LEDMatrix(column_size=8, row_size=8)
-    for i in range(1, len(led.get()) - 8):
-      led_column_slide.add(mat=led.getSplitedMatrix(row_offset=i), add_row_last=True)
-    led_column_slide.horizontalReading()
+    for i in range(num):
+      led[i].verticalReading()
+      led_column_slide.append(LEDMatrix(column_size=8, row_size=8))
+      for j in range(1, len(led.get()) - 8):
+        led_column_slide[i].add(mat=led[i].getSplitedMatrix(row_offset=j), add_row_last=True)
+      led_column_slide[i].horizontalReading()
     pic.generate(led_column_slide, is_no_slide=True)
   elif mode == 3:
     # no_slide
+    led_no_slide = []
     pic = PICCodeGenerator(hw_info, 1)
-    led_no_slide = LEDMatrix(mat = led.getSplitedMatrix())
-    for i in range(1, len(led.get()[0]) // 8):
-      led_no_slide.add(mat = led.getSplitedMatrix(column_offset=8*i), add_column_last=True)
+    for i in range(num):
+      led_no_slide.append(LEDMatrix(mat = led[i].getSplitedMatrix()))
+      for j in range(1, len(led[i].get()[0]) // 8):
+        led_no_slide[i].add(mat = led[i].getSplitedMatrix(column_offset=8*j), add_column_last=True)
     pic.generate(led_matrix=led_no_slide, is_no_slide=True)
 
   # アセンブラディレクトリにアセンブラのコードを生成
