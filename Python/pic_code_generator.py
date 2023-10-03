@@ -214,7 +214,7 @@ class PICCodeGenerator:
     output += "\tCLRF OFFSET_H\n"
     # 計算GOTO
     output += "\tMOVF MODE, W\n"
-    output += "\tADDWF PCL, F\n"
+    output += "\tBRW\n"
     for i in range(len(self.__data_size)):
       output += "\tGOTO UPDATE_MODE_JUMP_" + str(i) + "\n"
 
@@ -268,7 +268,7 @@ class PICCodeGenerator:
     # OFFSETがデータの末尾に到達しているかを確認する
     # 計算GOTO
     output += "\tMOVF MODE, W\n"
-    output += "\tADDWF PCL, F\n"
+    output += "\tBRW\n"
     for i in range(len(self.__data_size)):
       output += "\tGOTO LOAD_JUMP_" + str(i) + "\n"
     for i in range(len(self.__data_size)):
