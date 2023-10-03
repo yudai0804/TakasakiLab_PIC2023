@@ -8,7 +8,7 @@ BOARD := 16F1938
 SRC_DIR := asm
 BUILD_DIR := build
 # javaのパス
-JAVA := java
+JAVA :=
 #アセンブラのコンパイラのパス
 MP_AS :=
 # リンカのパス
@@ -17,16 +17,19 @@ MP_LD :=
 MP_IPE :=
 
 # OSに応じて，パスを設定
+# インストール先のパスなどは各自の環境に合わせてください
 ifeq ($(OS),Windows_NT)
 # Windowsの場合
 	MP_AS := "C:\Program Files (x86)\Microchip\MPLABX\v5.00\mpasmx\mpasmx.exe"
 	MP_LD := "C:\Program Files (x86)\Microchip\MPLABX\v5.00\mpasmx\mplink.exe"
 	MP_IPE := "C:\Program Files (x86)\Microchip\MPLABX\v5.00\mplab_platform\mplab_ipe\ipecmd.jar"
+	JAVA := java
 else
 # linux
 	MP_AS := "/opt/microchip/mplabx/v5.00/mpasmx/mpasmx"
 	MP_LD :="/opt/microchip/mplabx/v5.00/mpasmx/mplink"
-	MP_IPE := "/opt/microchip/mplabx/v5.00/mplab_platform/mplab_ipe/ipecmd.jar"
+	MP_IPE := "/opt/microchip/mplabx/v6.00/mplab_platform/mplab_ipe/ipecmd.jar"
+	JAVA := /home/yudai/jre1.8.0_381/bin/java
 endif
 
 # PICKIT3の場合はPPK3,PICKIT4の場合はPPK4
