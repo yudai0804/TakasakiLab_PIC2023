@@ -56,9 +56,9 @@ class PICCodeGenerator:
     self.__output += "__CONFIG\t_CONFIG1, _FOSC_INTOSC & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_OFF & _CLKOUTEN_OFF & _IESO_OFF & _FCMEN_OFF\n"
     self.__output += "__CONFIG\t_CONFIG2, _WRT_OFF & _VCAPEN_OFF & _PLLEN_OFF & _STVREN_OFF & _BORV_LO & _LVP_OFF\n"
     for i in range(8):
-      self.__output += "MATRIX" + str(i) + "\tEQU\t" + str(hex(112 + i) + "\n")
+      self.__output += "MATRIX" + str(i) + "\tEQU\t" + format(112 + i, "#04x") + "\n"
     for i in range(3):
-      self.__output += "CNT" + str(i) + "\tEQU\t" + str(hex(120 + i) + "\n")
+      self.__output += "CNT" + str(i) + "\tEQU\t" + format(120 + i, "#04x") + "\n"
     self.__output += "LOOP_CNT\tEQU\t0x7b\n"
     self.__output += "OFFSET_L\tEQU\t0x7c\n"
     self.__output += "OFFSET_H\tEQU\t0x7d\n"
@@ -104,7 +104,7 @@ class PICCodeGenerator:
               output = output.rstrip(",")
               output += "\n"
               output += "\tDT "
-          output += str(hex(byte[j])) + ","
+          output += format(byte[j], "#04x") + ","
         if output[-1] == ",":
           output = output.rstrip(",")
           output += "\n"
@@ -273,11 +273,11 @@ class PICCodeGenerator:
       output += "\tGOTO LOAD_JUMP_" + str(i) + "\n"
     for i in range(len(self.__data_size)):
       output += "LOAD_JUMP_" + str(i) + "\n"
-      output += "\tMOVLW " + str(hex(self.__data_size[i] % 256)) + "\n"
+      output += "\tMOVLW " + format(self.__data_size[i] % 256, "#04x") + "\n"
       output += "\tSUBWF OFFSET_L, W\n"
       output += "\tBTFSS STATUS, Z\n"
       output += "\tRETURN\n"
-      output += "\tMOVLW " + str(hex(self.__data_size[i] // 256)) + "\n"
+      output += "\tMOVLW " + format(self.__data_size[i] // 256, "#04x") + "\n"
       output += "\tSUBWF OFFSET_H, W\n"
       output += "\tBTFSS STATUS, Z\n"
       output += "\tRETURN\n"
@@ -303,14 +303,14 @@ class PICCodeGenerator:
     elif self.__hardware.angle == 90:
       for i in range(8):
         if is_column_direction_slide != None:
-          output += "\tMOVLW " + str(hex(1 << self.__hardware.column_pin[7 - i])) + "\n"
+          output += "\tMOVLW " + format(1 << self.__hardware.column_pin[7 - i], "#04x") + "\n"
           output += "\tMOVWF " + self.__hardware.column_port + "\n"
           output += "\tMOVIW FSR1++\n"
           output += "\tMOVWF " + self.__hardware.row_port + "\n"
         else:
           output += "\tMOVIW FSR1++\n"
           output += "\tMOVWF " + self.__hardware.column_port + "\n"
-          output += "\tMOVLW " + str(hex(255 - (1 << self.__hardware.row_pin[i]))) + "\n"
+          output += "\tMOVLW " + format(255 - (1 << self.__hardware.row_pin[i]), "#04x") + "\n"
           output += "\tMOVWF " + self.__hardware.row_port + "\n"
         output += "\tCALL LED_DELAY\n"
     elif self.__hardware.angle == 180:
