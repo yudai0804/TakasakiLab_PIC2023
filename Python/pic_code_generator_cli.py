@@ -45,7 +45,7 @@ try:
   if mode == 1:
     # row slide
     pic = PICCodeGenerator(hw_info, 8)
-    pic.generate(led, is_row_direction_slide=True)
+    pic.generate(view_str=s, led_matrix=led, is_row_direction_slide=True)
   elif mode == 2:
     # column slide
     # column slideの実装ではなく，no_slideの実装を流用しているので注意
@@ -57,7 +57,7 @@ try:
       for j in range(1, len(led.get()) - 8):
         led_column_slide[i].add(mat=led[i].getSplitedMatrix(row_offset=j), add_row_last=True)
       led_column_slide[i].horizontalReading()
-    pic.generate(led_column_slide, is_no_slide=True)
+    pic.generate(view_str=s, led_matrix=led_column_slide, is_no_slide=True)
   elif mode == 3:
     # no_slide
     led_no_slide = []
@@ -66,7 +66,7 @@ try:
       led_no_slide.append(LEDMatrix(mat = led[i].getSplitedMatrix()))
       for j in range(1, len(led[i].get()[0]) // 8):
         led_no_slide[i].add(mat = led[i].getSplitedMatrix(column_offset=8*j), add_column_last=True)
-    pic.generate(led_matrix=led_no_slide, is_no_slide=True)
+    pic.generate(view_str=s, led_matrix=led_no_slide, is_no_slide=True)
 
   # アセンブラディレクトリにアセンブラのコードを生成
   os.makedirs("../asm", exist_ok=True)
