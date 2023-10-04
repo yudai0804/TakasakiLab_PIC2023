@@ -106,7 +106,7 @@ class PICCodeGenerator:
         # データを書き込む
         # 理由はわからないが，DTは4バイトずづで区切るとうまくいく
         # 参考:http://www.picfun.com/pic18/tech18x02.html
-        output += "; 文字列「" + view_str[i][1:-1] + "」のデータ\n"
+        output = "; 文字列「" + view_str[i][1:-1] + "」のデータ\n"
         output += "LEDMATRIX_DATA" + str(i) + "\n"
         output += "\tDT "
         for j in range(len(byte)):
