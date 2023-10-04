@@ -200,8 +200,8 @@ class PICCodeGenerator:
     output += "\tCALL UPDATE_MODE\n"
     output += "\t; 文字データを読み込む\n"
     output += "\tCALL LOAD\n"
-    output += "\t; 描画更新周期を" + str(self.__one_flame_us / 1e3) + "[ms]にするための遅延処理\n"
     loop_cnt = self.__one_flame_us // (8 * self.__led_delay_us)
+    output += "\t; 描画更新周期を" + str(self.__one_flame_us / 1e6) + "[s]にするための遅延処理\n"
     output += "\tMOVLW D'" + str(loop_cnt) + "'\n"
     output += "\tMOVWF LOOP_CNT\n"
     output += "LOOP_JUMP0\n"
