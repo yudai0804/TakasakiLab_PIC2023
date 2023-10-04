@@ -351,7 +351,6 @@ class PICCodeGenerator:
     if self.__hardware.angle == 0:
       print("未実装")
     elif self.__hardware.angle == 90:
-      output += "\t; データ一時保管用変数から点灯データを取得する\n"
       for i in range(8):
         if is_column_direction_slide != None:
           output += "\tMOVLW " + format(1 << self.__hardware.column_pin[7 - i], "#04x") + "\n"
