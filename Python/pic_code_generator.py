@@ -378,6 +378,7 @@ class PICCodeGenerator:
       Exception("delay generate error")
       return
     self.__output += output
+    self.__output += "\n; 1.25[ms]のdelay\n"
     self.__output += delay_str
 
   def generate( self,
@@ -417,7 +418,7 @@ class PICCodeGenerator:
     self.__generateLightLEDMatrix(led_matrix, is_row_direction_slide, 
                                   is_column_direction_slide, is_no_slide)
     # 末尾にENDを追加
-    self.__output += "END\n"
+    self.__output += "\nEND\n"
 
   def getHardwareInformation(is_suehiro = None, is_saito = None):
     if is_suehiro != None:
