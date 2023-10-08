@@ -7,7 +7,7 @@ import sys
 import traceback
 
 try:
-  f = FontLoader('./misaki_gothic_2nd.bdf')
+  f = FontLoader('../../font/misaki_gothic_2nd.bdf')
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
   print("型式を選択してください．")
@@ -69,8 +69,8 @@ try:
     pic.generate(view_str=s, led_matrix=led_no_slide, is_no_slide=True)
 
   # アセンブラディレクトリにアセンブラのコードを生成
-  os.makedirs("../asm", exist_ok=True)
-  with open("../asm/main.asm", mode="w") as f:
+  os.makedirs("../../asm", exist_ok=True)
+  with open("../../asm/main.asm", mode="w") as f:
     f.write(pic.getOutput())
   if pic.getOutput() != "":
     print("アセンブラの自動生成が完了しました")

@@ -53,7 +53,7 @@ class FontLoader:
 
 if __name__ == '__main__':
 	from util import *
-	font = FontLoader('./misaki_gothic_2nd.bdf')
+	font = FontLoader('../../font/misaki_gothic_2nd.bdf')
 	d = font.getDictionary()
 	
 	s = '山口雄大'
