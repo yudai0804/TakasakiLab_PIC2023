@@ -47,6 +47,7 @@ class PICCodeGenerator:
                          is_column_direction_slide = None,
                          is_no_slide = None):
         # configを設定
+        self.__output += ";GitHub:https://github.com/yudai0804/TakasakiLab_PIC2023\n"
         self.__output += "LIST P=PIC16F1938\n"
         self.__output += "#include<p16f1938.inc>\n"
         self.__output += "\n"
