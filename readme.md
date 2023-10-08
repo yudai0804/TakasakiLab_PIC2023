@@ -27,8 +27,9 @@ options:
                         表示したいパターン数を入力してください
   --mode {1,2,3}        1:横にスライド，2:縦にスライド，3:スライドしない
 ```
+## makefile
+[参考](https://github.com/yudai0804/pic-makefile-template)  
+このリポジトリでは上記のmakefile templateを使用しています  
 
-[makefileの詳細](https://github.com/yudai0804/pic-makefile-template)
-
-## 使うPIC
-[PIC16F1938](http://ww1.microchip.com/downloads/jp/DeviceDoc/41574A_JP.pdf)
+## 使用しているPIC
+[PIC16F1938](http://ww1.microchip.com/downloads/jp/DeviceDoc/41574A_JP.pdf)  
