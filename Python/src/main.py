@@ -7,7 +7,7 @@ import sys
 import traceback
 
 try:
-  f = FontLoader('./misaki_gothic_2nd.bdf')
+  f = FontLoader('../../font/misaki_gothic_2nd.bdf')
   d = f.getDictionary()
   row_converter = FontConverter_RowDirection(d)
   print("型式を選択してください．")

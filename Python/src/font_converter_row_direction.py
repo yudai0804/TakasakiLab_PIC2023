@@ -60,7 +60,7 @@ if __name__ == '__main__':
 	import font_loader
 	from led_matrix import *
 	from util import *
-	font = font_loader.FontLoader('./misaki_gothic_2nd.bdf')
+	font = font_loader.FontLoader('../../font/misaki_gothic_2nd.bdf')
 	d = font.getDictionary()
 	row_converter = FontConverter_RowDirection(d)
 	a = row_converter.convert('あいうえおABC')
