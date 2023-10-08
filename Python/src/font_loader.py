@@ -55,7 +55,7 @@ if __name__ == '__main__':
     from util import *
     font = FontLoader('../../font/misaki_gothic_2nd.bdf')
     d = font.getDictionary()
-    s = '山口雄大'
+    s = ''
     printByteMatrix(d['山'])
     printByteMatrix(d['口'])
     printByteMatrix(d['雄'])

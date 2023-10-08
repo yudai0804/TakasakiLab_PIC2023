@@ -5,7 +5,6 @@ class HardwareInformation:
     PICCodeGeneratorを利用するにあたって，必要となるハードウェア情報を保持するクラス
     """
     def __init__(self,
-                 angle : int,
                  row_port : str,
                  row_pin : list[int],
                  column_port : str,
@@ -13,14 +12,11 @@ class HardwareInformation:
         """
         Parameters
         ----------
-        angle : LEDマトリクスの角度(0,90,180,270のどれか)
-                        rowとcolumnはLEDMatrixのデータシート準拠
         row_port : rowのポート名
         row_pin : 0行目から7行目のピン名
         column_port : columnのポート名
         column_pin : 0列目から7列目のピン名
         """
-        self.angle = angle
         self.row_port = row_port
         self.row_pin = row_pin
         self.column_port = column_port
@@ -78,54 +74,47 @@ class PICCodeGenerator:
                              is_column_direction_slide = None,
                              is_no_slide = None):
         output = ""
-        if self.__hardware.angle == 0:
-            print("未実装")
-        elif self.__hardware.angle == 90:
-            for i in range(len(led_matrix)):
-                byte = []
-                mat = led_matrix[i].get()
-                # 条件に応じてbitからbyteに変換する
-                if is_row_direction_slide != None or is_no_slide != None:
-                    for j in range(len(mat[0]) // 8):
-                        split_bit = led_matrix[i].getSplitedMatrix(column_offset=8 * j)
-                        for k in range(8):
-                            tmp_byte = 0
-                            for l in range(8):
-                                tmp_byte += split_bit[7 - l][k] << self.__hardware.column_pin[l]
-                            byte.append(tmp_byte)
-                elif is_column_direction_slide != None:
-                    for j in range(len(mat) // 8):
-                        split_bit = led_matrix[i].getSplitedMatrix(row_offset=8 * j)
-                        for k in range(8):
-                            tmp_byte = 0
-                            for l in range(8):
-                                # rowはカソード側のためビットを反転
-                                if split_bit[k][l] == 0:
-                                    tmp_byte += 1 << self.__hardware.row_pin[l]
-                            byte.append(tmp_byte)
-                # データを書き込む
-                # 理由はわからないが，DTは4バイトずづで区切るとうまくいく
-                # 参考:http://www.picfun.com/pic18/tech18x02.html
-                output = "; 文字列「" + view_str[i][1:-1] + "」のデータ\n"
-                output += "LEDMATRIX_DATA" + str(i) + "\n"
-                output += "\tDT "
-                for j in range(len(byte)):
-                    if j % 4 == 0 and j != 0:
-                        if output[-1] == ",":
-                            output = output.rstrip(",")
-                            output += "\n"
-                            output += "\tDT "
-                    output += format(byte[j], "#04x") + ","
-                if output[-1] == ",":
-                    output = output.rstrip(",")
-                    output += "\n"
+        for i in range(len(led_matrix)):
+            byte = []
+            mat = led_matrix[i].get()
+            # 条件に応じてbitからbyteに変換する
+            if is_row_direction_slide != None or is_no_slide != None:
+                for j in range(len(mat[0]) // 8):
+                    split_bit = led_matrix[i].getSplitedMatrix(column_offset=8 * j)
+                    for k in range(8):
+                        tmp_byte = 0
+                        for l in range(8):
+                            tmp_byte += split_bit[7 - l][k] << self.__hardware.column_pin[l]
+                        byte.append(tmp_byte)
+            elif is_column_direction_slide != None:
+                for j in range(len(mat) // 8):
+                    split_bit = led_matrix[i].getSplitedMatrix(row_offset=8 * j)
+                    for k in range(8):
+                        tmp_byte = 0
+                        for l in range(8):
+                            # rowはカソード側のためビットを反転
+                            if split_bit[k][l] == 0:
+                                tmp_byte += 1 << self.__hardware.row_pin[l]
+                        byte.append(tmp_byte)
+            # データを書き込む
+            # 理由はわからないが，DTは4バイトずづで区切るとうまくいく
+            # 参考:http://www.picfun.com/pic18/tech18x02.html
+            output = "; 文字列「" + view_str[i][1:-1] + "」のデータ\n"
+            output += "LEDMATRIX_DATA" + str(i) + "\n"
+            output += "\tDT "
+            for j in range(len(byte)):
+                if j % 4 == 0 and j != 0:
+                    if output[-1] == ",":
+                        output = output.rstrip(",")
+                        output += "\n"
+                        output += "\tDT "
+                output += format(byte[j], "#04x") + ","
+            if output[-1] == ",":
+                output = output.rstrip(",")
                 output += "\n"
-                self.__output += output
-                self.__data_size.append(len(byte))
-        elif self.__hardware.angle == 180:
-            print("未実装")
-        elif self.__hardware.angle == 270:
-            print("未実装")
+            output += "\n"
+            self.__output += output
+            self.__data_size.append(len(byte))
 
     def __generateInitialize(self,
                              led_matrix : list[LEDMatrix], 
@@ -348,25 +337,18 @@ class PICCodeGenerator:
                                  is_no_slide = None):
         output = "; LEDマトリクスを描画するサブルーチン\n"
         output += "LEDMATRIX\n"
-        if self.__hardware.angle == 0:
-            print("未実装")
-        elif self.__hardware.angle == 90:
-            for i in range(8):
-                if is_column_direction_slide != None:
-                    output += "\tMOVLW " + format(1 << self.__hardware.column_pin[7 - i], "#04x") + "\n"
-                    output += "\tMOVWF " + self.__hardware.column_port + "\n"
-                    output += "\tMOVIW FSR1++\n"
-                    output += "\tMOVWF " + self.__hardware.row_port + "\n"
-                else:
-                    output += "\tMOVIW FSR1++\n"
-                    output += "\tMOVWF " + self.__hardware.column_port + "\n"
-                    output += "\tMOVLW " + format(255 - (1 << self.__hardware.row_pin[i]), "#04x") + "\n"
-                    output += "\tMOVWF " + self.__hardware.row_port + "\n"
-                output += "\tCALL LED_DELAY\n"
-        elif self.__hardware.angle == 180:
-            print("未実装")
-        elif self.__hardware.angle == 270:
-            print("未実装")
+        for i in range(8):
+            if is_column_direction_slide != None:
+                output += "\tMOVLW " + format(1 << self.__hardware.column_pin[7 - i], "#04x") + "\n"
+                output += "\tMOVWF " + self.__hardware.column_port + "\n"
+                output += "\tMOVIW FSR1++\n"
+                output += "\tMOVWF " + self.__hardware.row_port + "\n"
+            else:
+                output += "\tMOVIW FSR1++\n"
+                output += "\tMOVWF " + self.__hardware.column_port + "\n"
+                output += "\tMOVLW " + format(255 - (1 << self.__hardware.row_pin[i]), "#04x") + "\n"
+                output += "\tMOVWF " + self.__hardware.row_port + "\n"
+            output += "\tCALL LED_DELAY\n"
         # FSR1を0x70に戻す
         "\t; FSR1を0x70に戻す\n"
         output += "\tMOVLW 0x70\n"
@@ -422,15 +404,13 @@ class PICCodeGenerator:
 
     def getHardwareInformation(is_suehiro = None, is_saito = None):
         if is_suehiro != None:
-            h = HardwareInformation(90,
-                                    "PORTA",
+            h = HardwareInformation("PORTA",
                                     [0,6,1,3,5,2,7,4],
                                     "PORTC",
                                     [0,1,2,3,4,5,6,7])
             return h
         elif is_saito != None:
-            h = HardwareInformation(90,
-                                    "PORTA",
+            h = HardwareInformation("PORTA",
                                     [0,6,1,4,5,2,7,3],
                                     "PORTC",
                                     [0,1,2,3,4,5,6,7])
