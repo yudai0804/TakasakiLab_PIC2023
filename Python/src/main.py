@@ -10,8 +10,8 @@ import argparse
 try:
     # コマンドライン引数を処理
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=int, choices=range(0,3), default=0, help="型式を選択してください\n1:末廣，2:齊藤")
-    parser.add_argument("--pattern_number", type=int, choices=range(1,3), default=0, help="表示したいパターン数を入力してください")
+    parser.add_argument("--model", type=int, choices=range(1,3), default=0, help="型式を選択してください\n1:末廣，2:齊藤")
+    parser.add_argument("--pattern_number", type=int, choices=range(1,6), default=0, help="表示したいパターン数を入力してください")
     parser.add_argument("--mode", type=int, choices=range(1,4), default=0, help="1:横にスライド，2:縦にスライド，3:スライドしない")
 
     args = parser.parse_args()

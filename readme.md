@@ -22,8 +22,8 @@ sh run.sh オプション
 ```
 options:
   -h, --help            show this help message and exit
-  --model {0,1,2}       型式を選択してください 1:末廣，2:齊藤
-  --pattern_number {1,2}
+  --model {1,2}       型式を選択してください 1:末廣，2:齊藤
+  --pattern_number {1,2,3,4,5}
                         表示したいパターン数を入力してください
   --mode {1,2,3}        1:横にスライド，2:縦にスライド，3:スライドしない
 ```
