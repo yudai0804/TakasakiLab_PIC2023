@@ -35,4 +35,4 @@ options:
 [PIC16F1938](http://ww1.microchip.com/downloads/jp/DeviceDoc/41574A_JP.pdf)  
 
 ## 生成されるソースコード
-[ソースコード](https://github.com/yudai0804/TakasakiLab_PIC2023/doc/example.asm)
+[ソースコード](https://github.com/yudai0804/TakasakiLab_PIC2023/blob/master/doc/example.asm)
