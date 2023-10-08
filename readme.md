@@ -15,7 +15,17 @@ LEDマトリクスのフォントは[美咲フォント](https://littlelimit.net
 
 ## コマンド
 ```
-sh run.sh
+sh run.sh オプション
+```
+
+### オプション
+```
+options:
+  -h, --help            show this help message and exit
+  --model {0,1,2}       型式を選択してください 1:末廣，2:齊藤
+  --pattern_number {1,2}
+                        表示したいパターン数を入力してください
+  --mode {1,2,3}        1:横にスライド，2:縦にスライド，3:スライドしない
 ```
 
 [makefileの詳細](https://github.com/yudai0804/pic-makefile-template)
