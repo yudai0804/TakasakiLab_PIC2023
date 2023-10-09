@@ -15,7 +15,6 @@ MP_AS :=
 MP_LD :=
 # ipecmd(書き込みツール)のパス(
 MP_IPE :=
-
 # OSに応じて，パスを設定
 # インストール先のパスなどは各自の環境に合わせてください
 ifeq ($(OS),Windows_NT)
@@ -29,7 +28,7 @@ else
 	MP_AS := "/opt/microchip/mplabx/v5.00/mpasmx/mpasmx"
 	MP_LD :="/opt/microchip/mplabx/v5.00/mpasmx/mplink"
 	MP_IPE := "/opt/microchip/mplabx/v6.00/mplab_platform/mplab_ipe/ipecmd.jar"
-	JAVA := /home/yudai/jre1.8.0_381/bin/java
+	JAVA := /home/$(shell whoami)/jre1.8.0_381/bin/java
 endif
 
 # PICKIT3の場合はPPK3,PICKIT4の場合はPPK4
