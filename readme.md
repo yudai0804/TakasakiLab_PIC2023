@@ -13,16 +13,6 @@ LEDマトリクスに好きな文字を表示させることができ、マイ�
 LEDマトリクスに表示する文字は8x8フォントの[美咲フォント](https://littlelimit.net/misaki.htm)を使用しています。  
 ひらがな、カタカナ、漢字(JIS 第一・第二水準)、記号が表示可能です。
 
-# requirements
-- Windows or Linux
-- Python3.10
-- MPLAB 5.35
-- java(PICの書き込み用)
-  - JRE(Java Runtime Environment)
-  - ダウンロードリンク:https://www.java.com/ja/download/
-  - javaの種類によっては動かないものがあるので注意
-- shell(windowsの場合はgit bash必須)
-
 # Command
 ```
 sh run.sh [Option]
