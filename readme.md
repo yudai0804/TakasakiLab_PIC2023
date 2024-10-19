@@ -39,8 +39,14 @@ LEDマトリクスの基板は2種類存在しているため、オプション�
 - Windows10、11、Debian12、Ubuntu22
 - Python3.11
 - MPLAB 5.35
-- jre 1.8.0_431
+- Oracle JRE 8
 - make
+
+## 注意事項
+- MPLABのバージョンは必ず5.35以下にしてください。5.35よりはPICのアセンブラ(MPASM)が付属していないからです。特に理由がなければ、5.35を使用することを強く推奨します。
+- Javaの実行環境(JRE)にはOracle JREとOpenJRE(OpenJDK)の2種類がありますが、前者でしか動作確認を行っていません。
+- Java 8を使用しているため、将来的に動かなくなる可能性が非常に高いです。
+- パスが異なる場合は、必要に応じてMakefileや環境変数を変更してください。
 
 ## Setup(Windows)
 ### Python、make、Git Bashをインストール
@@ -130,11 +136,6 @@ cd TakasakiLab_PIC2023
 ```
 bash run.sh
 ```
-
-## 注意事項
-- MPLABのバージョンは必ず5.35以下にしてください。5.35よりはPICのアセンブラ(MPASM)が付属していないからです。特に理由がなければ、5.35を使用することを強く推奨します。
-- Javaの実行環境(JRE)にはOracle JREとOpenJRE(OpenJDK)の2種類がありますが、前者でしかIPECMDは動作しません。
-- パスが異なる場合は、必要に応じてMakefileや環境変数を変更してください。
 
 # makefile
 PICのコンパイル、書き込みについては、以下のリンクのmakefileを使用しています。  
