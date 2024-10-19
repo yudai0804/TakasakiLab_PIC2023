@@ -1,7 +1,9 @@
-# Debian 12以外を使うと今後動かなくなる可能性があるので、latestにはしない
+# latestを使うと今後動かなくなる可能性があるので、latestにはしない
 FROM debian:12
 
 RUN apt-get update && apt-get install -y curl procps make python3
+
+# https://developerhelp.microchip.com/xwiki/bin/view/software-tools/ides/x/archive/linux/
 RUN dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y libc6:i386 libx11-6:i386 libxext6:i386 libstdc++6:i386 libexpat1:i386

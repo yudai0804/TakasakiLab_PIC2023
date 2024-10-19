@@ -42,6 +42,9 @@ LEDマトリクスの基板は2種類存在しているため、オプション�
 - Oracle JRE 8
 - make
 
+Dockerにも対応しています。  
+Dockerを使える環境であれば、Dockerを使うのが一番楽だと思います。
+
 ## 注意事項
 - MPLABのバージョンは必ず5.35以下にしてください。5.35よりはPICのアセンブラ(MPASM)が付属していないからです。特に理由がなければ、5.35を使用することを強く推奨します。
 - Javaの実行環境(JRE)にはOracle JREとOpenJRE(OpenJDK)の2種類がありますが、前者でしか動作確認を行っていません。
@@ -91,7 +94,7 @@ Windowsの文字コードがShift JISであることが原因で、プログラ�
 
 文字コード変更のやり方は自分で調べてください...  
 
-## Linux
+## Setup(Linux)
 ### MPLABをインストール
 インストールリンク
 https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem
@@ -137,7 +140,25 @@ cd TakasakiLab_PIC2023
 bash run.sh
 ```
 
-# makefile
+## Setup(Docker)
+実行(推奨)
+```
+docker run -it --privileged -v .:/app -v /dev/bus/usb:/dev/bus/usb yudai0804/takasakilab_pic2023:latest bash run.sh
+```
+
+### 自分でbuildしたい人向け
+
+build
+```
+docker build -t takasakilab_pic2023 .
+```
+
+buildしたものを実行
+```
+docker run -it --privileged -v .:/app -v /dev/bus/usb:/dev/bus/usb takasakilab_pic2023 bash run.sh
+```
+
+# Makefile
 PICのコンパイル、書き込みについては、以下のリンクのmakefileを使用しています。  
 https://github.com/yudai0804/pic-makefile-template
 
