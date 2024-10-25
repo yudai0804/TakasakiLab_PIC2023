@@ -1,7 +1,6 @@
 # 概要
 ![pic-animation](https://github.com/yudai0804/TakasakiLab_PIC2023/assets/41527277/011d3b98-828a-40da-93be-2f485b1a4756)  
 
-2023年度の高専祭で使用した作品です。  
 LEDマトリクスに好きな文字を表示させることができ、マイコンは[PIC16F1938](http://ww1.microchip.com/downloads/jp/DeviceDoc/41574A_JP.pdf)、言語はアセンブラを使用しています。  
 表示させたい文字を入力すると、ソースコードをPythonで自動生成、コンパイルおよび書き込みまでを自動で行うのが特徴です。    
 [自動生成されるソースコード例](https://github.com/yudai0804/TakasakiLab_PIC2023/blob/master/doc/example.asm)
